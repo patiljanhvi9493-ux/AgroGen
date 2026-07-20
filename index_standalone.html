@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgroGen - AI Powered Smart Farming Assistant</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #09100c; color: #f0fdf4; margin: 0; }
+    .glass-panel { background: rgba(18, 30, 22, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(74, 222, 128, 0.2); }
+    .glass-card { background: linear-gradient(135deg, rgba(22, 38, 28, 0.85) 0%, rgba(13, 24, 17, 0.9) 100%); border: 1px solid rgba(74, 222, 128, 0.15); transition: all 0.3s ease; }
+    .glass-card:hover { border-color: rgba(74, 222, 128, 0.4); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(34, 197, 94, 0.2); }
+    @keyframes laserScan { 0% { top: 0%; opacity: 0.8; } 50% { top: 95%; opacity: 1; } 100% { top: 0%; opacity: 0.8; } }
+    .animate-laser-scan { position: absolute; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, #22c55e, #86efac, #22c55e, transparent); box-shadow: 0 0 15px 3px rgba(34, 197, 94, 0.8); animation: laserScan 2.5s infinite ease-in-out; }
+  </style>
+</head>
+<body class="bg-[#09100c] text-emerald-100 min-h-screen">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function AgroGenApp() {
+      const [activeTab, setActiveTab] = useState('landing');
+      const [scanning, setScanning] = useState(false);
+      const [result, setResult] = useState(null);
+      const [chatOpen, setChatOpen] = useState(false);
+      const [messages, setMessages] = useState([
+        { sender: 'bot', text: 'Hello! I am AgroGen 24/7 AI Smart Assistant. How can I help your crops today?' }
+      ]);
+      const [chatInput, setChatInput] = useState('');
+
+      const runScan = () => {
+        setScanning(true);
+        setResult(null);
+        setTimeout(() => {
+          setScanning(false);
+          setResult({
+            name: 'Tomato Late Blight (Phytophthora infestans)',
+            crop: 'Tomato',
+            confidence: 96.8,
+            severity: 'High',
+            affectedArea: '35% foliage',
+            healthScore: 62,
+            organic: ['Apply Liquid Copper Fungicide twice weekly', 'Spray Neem Oil (0.5% concentration)'],
+            chemical: ['Apply Chlorothalonil or Mancozeb sprays', 'Use Cymoxanil systemic fungicide']
+          });
+        }, 2200);
+      };
+
+      const handleSendChat = () => {
+        if (!chatInput.trim()) return;
+        const newMsgs = [...messages, { sender: 'user', text: chatInput }];
+        setMessages(newMsgs);
+        const q = chatInput;
+        setChatInput('');
+        setTimeout(() => {
+          let ans = "AgroGen AI recommends maintaining optimal soil pH (6.0-6.8) and providing balanced NPK organic nutrients.";
+          if (q.toLowerCase().includes('yellow')) ans = "Yellowing leaves (Chlorosis) indicates Nitrogen deficiency or overwatering. Apply a foliar spray of Liquid Bio-Nitrogen.";
+          if (q.toLowerCase().includes('fertilizer')) ans = "For vegetative growth, apply balanced NPK 19:19:19 or Neem Coated Urea. For flowering, use High-Potash formulations.";
+          setMessages([...newMsgs, { sender: 'bot', text: ans }]);
+        }, 600);
+      };
+
+      return (
+        <div className="flex flex-col min-h-screen">
+          {/* Header */}
+          <header className="glass-panel sticky top-0 z-40 border-b border-emerald-500/20 px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3 cursor-pointer" onClick={() => setActiveTab('landing')}>
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 p-0.5">
+                <div className="w-full h-full bg-emerald-950 rounded-[10px] flex items-center justify-center font-bold text-emerald-300">🌿</div>
+              </div>
+              <span className="text-xl font-extrabold text-emerald-100">AgroGen AI</span>
+            </div>
+
+            <nav className="flex items-center gap-2 text-xs font-semibold">
+              <button onClick={() => setActiveTab('landing')} className={`px-3 py-1.5 rounded-lg ${activeTab === 'landing' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'text-emerald-300/70'}`}>Home</button>
+              <button onClick={() => setActiveTab('detection')} className={`px-3 py-1.5 rounded-lg ${activeTab === 'detection' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'text-emerald-300/70'}`}>Disease Scanner</button>
+              <button onClick={() => setActiveTab('crops')} className={`px-3 py-1.5 rounded-lg ${activeTab === 'crops' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'text-emerald-300/70'}`}>Crop Library</button>
+              <button onClick={() => setActiveTab('weather')} className={`px-3 py-1.5 rounded-lg ${activeTab === 'weather' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'text-emerald-300/70'}`}>Weather</button>
+            </nav>
+          </header>
+
+          {/* Body Content */}
+          <main className="flex-1 max-w-6xl w-full mx-auto p-6 space-y-8">
+            {activeTab === 'landing' && (
+              <div className="space-y-12 text-center py-8">
+                <div className="glass-panel p-12 rounded-3xl border border-emerald-500/30 bg-gradient-to-br from-emerald-950 to-teal-950 space-y-6">
+                  <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-400/30">Next-Gen AI Smart Farming</span>
+                  <h1 className="text-5xl font-black text-emerald-100">AI Powered Smart Farming Assistant</h1>
+                  <p className="text-sm text-emerald-300/80 max-w-2xl mx-auto">Detect diseases instantly, identify pests, receive 24/7 AI guidance, and improve crop health.</p>
+                  <div className="flex justify-center gap-4 pt-2">
+                    <button onClick={() => setActiveTab('detection')} className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 text-emerald-950 font-extrabold text-sm shadow-lg">Detect Disease Now</button>
+                    <button onClick={() => setChatOpen(true)} className="px-8 py-3.5 rounded-2xl bg-emerald-900/60 border border-emerald-500/30 text-emerald-200 font-bold text-sm">Talk to AI Assistant</button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'detection' && (
+              <div className="max-w-3xl mx-auto space-y-6 text-center">
+                <h2 className="text-3xl font-extrabold text-emerald-100">AI Disease Diagnostic Scanner</h2>
+                <div className="glass-panel p-8 rounded-3xl border border-emerald-500/30 space-y-6">
+                  <div className="border-2 border-dashed border-emerald-500/40 p-8 rounded-2xl relative overflow-hidden bg-emerald-950/40">
+                    {scanning && <div className="animate-laser-scan" />}
+                    <img src="https://images.unsplash.com/photo-1592417817098-8f3d6eb19657?w=500&q=80" alt="Sample leaf" className="w-full h-56 object-cover rounded-xl mb-4" />
+                    <button onClick={runScan} disabled={scanning} className="px-6 py-3 rounded-xl bg-emerald-500 text-emerald-950 font-black text-xs">
+                      {scanning ? 'Scanning Leaf Cell Structures...' : 'Run Instant AI Scan Demo'}
+                    </button>
+                  </div>
+
+                  {result && (
+                    <div className="p-6 rounded-2xl bg-emerald-900/40 border border-emerald-500/30 text-left space-y-4">
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-xl font-bold text-emerald-100">{result.name}</h3>
+                        <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300">{result.severity} Severity</span>
+                      </div>
+                      <p className="text-xs text-emerald-300">Confidence: {result.confidence}% | Health Score: {result.healthScore}/100</p>
+                      <div className="space-y-2 text-xs">
+                        <h4 className="font-bold text-emerald-200">Organic Remedies:</h4>
+                        {result.organic.map((o, i) => <p key={i}>• {o}</p>)}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'crops' && (
+              <div className="space-y-6">
+                <h2 className="text-3xl font-extrabold text-emerald-100 text-center">Crop Encyclopedia</h2>
+                <div className="grid grid-cols-3 gap-6">
+                  {[
+                    { name: 'Rice (Paddy)', price: '$380 / Ton', img: 'https://images.unsplash.com/photo-1536657464919-892534f60d6e?w=400&q=80' },
+                    { name: 'Wheat', price: '$290 / Ton', img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&q=80' },
+                    { name: 'Tomato', price: '$420 / Ton', img: 'https://images.unsplash.com/photo-1592417817098-8f3d6eb19657?w=400&q=80' }
+                  ].map((c, i) => (
+                    <div key={i} className="glass-card rounded-2xl overflow-hidden p-4 space-y-3">
+                      <img src={c.img} alt={c.name} className="w-full h-36 object-cover rounded-xl" />
+                      <h3 className="font-bold text-emerald-100">{c.name}</h3>
+                      <span className="text-xs text-emerald-400 font-extrabold">{c.price}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'weather' && (
+              <div className="glass-panel p-8 rounded-3xl border border-emerald-500/30 text-center space-y-4">
+                <h2 className="text-3xl font-black text-emerald-100">Live Weather Advisory</h2>
+                <div className="text-5xl font-black text-emerald-300">28°C</div>
+                <p className="text-xs text-emerald-300/80">Humidity: 68% | Wind: 14 km/h | Rain Chance: 10%</p>
+              </div>
+            )}
+          </main>
+
+          {/* Chatbot Widget */}
+          <div className="fixed bottom-6 right-6 z-50">
+            {!chatOpen ? (
+              <button onClick={() => setChatOpen(true)} className="p-4 rounded-full bg-emerald-500 text-emerald-950 font-black shadow-2xl">🤖 AI 24/7</button>
+            ) : (
+              <div className="w-80 h-96 glass-panel rounded-3xl border border-emerald-500/40 p-4 flex flex-col justify-between shadow-2xl">
+                <div className="flex justify-between border-b border-emerald-800/40 pb-2">
+                  <span className="text-xs font-bold text-emerald-100">AgroGen AI Advisor</span>
+                  <button onClick={() => setChatOpen(false)} className="text-xs text-emerald-400">✕</button>
+                </div>
+                <div className="flex-1 overflow-y-auto space-y-2 py-2 text-xs">
+                  {messages.map((m, i) => (
+                    <div key={i} className={`p-2 rounded-xl max-w-[85%] ${m.sender === 'user' ? 'bg-emerald-500 text-emerald-950 font-bold ml-auto' : 'bg-emerald-900/60 text-emerald-100'}`}>
+                      {m.text}
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-2 pt-2 border-t border-emerald-800/40">
+                  <input type="text" value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSendChat()} placeholder="Ask AI..." className="flex-1 bg-emerald-950 px-3 py-1.5 rounded-xl text-xs text-emerald-100 focus:outline-none border border-emerald-500/30" />
+                  <button onClick={handleSendChat} className="px-3 py-1.5 bg-emerald-500 text-emerald-950 font-bold text-xs rounded-xl">Send</button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<AgroGenApp />);
+  </script>
+</body>
+</html>
