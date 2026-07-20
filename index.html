@@ -75,45 +75,45 @@
 <body class="bg-[#09100c] text-emerald-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-emerald-950">
 
   <!-- ================= NAVBAR ================= -->
-  <header className="sticky top-0 z-40 w-full glass-panel border-b border-emerald-500/20 bg-emerald-950/90 backdrop-blur-xl">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+  <header class="sticky top-0 z-40 w-full glass-panel border-b border-emerald-500/20 bg-emerald-950/90 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
       
       <!-- Brand Logo -->
-      <div onclick="switchTab('landing')" className="flex items-center gap-3 cursor-pointer group shrink-0">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-green-400 to-teal-300 p-0.5 shadow-lg shadow-emerald-500/30 group-hover:scale-105 transition-transform">
-          <div className="w-full h-full bg-emerald-950 rounded-[10px] flex items-center justify-center font-bold text-emerald-300 text-lg">
+      <div onclick="switchTab('landing')" class="flex items-center gap-3 cursor-pointer group shrink-0">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-green-400 to-teal-300 p-0.5 shadow-lg shadow-emerald-500/30 group-hover:scale-105 transition-transform">
+          <div class="w-full h-full bg-emerald-950 rounded-[10px] flex items-center justify-center font-bold text-emerald-300 text-lg">
             🌱
           </div>
         </div>
-        <div className="flex flex-col">
-          <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-300 via-green-200 to-teal-200 bg-clip-text text-transparent glow-text">
+        <div class="flex flex-col">
+          <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-300 via-green-200 to-teal-200 bg-clip-text text-transparent glow-text">
             AgroGen
           </span>
-          <span className="text-[10px] font-semibold text-emerald-400/80 uppercase tracking-widest -mt-1">
+          <span class="text-[10px] font-semibold text-emerald-400/80 uppercase tracking-widest -mt-1">
             Smart AI Farming
           </span>
         </div>
       </div>
 
       <!-- Navigation Links -->
-      <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
-        <button onclick="switchTab('landing')" id="nav-landing" className="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">Home</button>
-        <button onclick="switchTab('dashboard')" id="nav-dashboard" className="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Dashboard</button>
-        <button onclick="switchTab('detection')" id="nav-detection" className="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Disease Detection</button>
-        <button onclick="switchTab('crops')" id="nav-crops" className="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Crop Library</button>
-        <button onclick="switchTab('knowledge')" id="nav-knowledge" className="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Knowledge</button>
-        <button onclick="switchTab('weather')" id="nav-weather" className="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Weather</button>
-        <button onclick="switchTab('marketplace')" id="nav-marketplace" className="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Marketplace</button>
-        <button onclick="switchTab('consultation')" id="nav-consultation" className="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Book Expert</button>
+      <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
+        <button onclick="switchTab('landing')" id="nav-landing" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">Home</button>
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Dashboard</button>
+        <button onclick="switchTab('detection')" id="nav-detection" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Disease Detection</button>
+        <button onclick="switchTab('crops')" id="nav-crops" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Crop Library</button>
+        <button onclick="switchTab('knowledge')" id="nav-knowledge" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Knowledge</button>
+        <button onclick="switchTab('weather')" id="nav-weather" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Weather</button>
+        <button onclick="switchTab('marketplace')" id="nav-marketplace" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Marketplace</button>
+        <button onclick="switchTab('consultation')" id="nav-consultation" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Book Expert</button>
       </nav>
 
       <!-- Right Header Actions -->
-      <div className="flex items-center gap-3">
-        <button onclick="switchTab('admin')" className="px-3 py-1.5 rounded-xl bg-teal-900/40 border border-teal-500/30 text-teal-300 text-xs font-extrabold hover:bg-teal-800/60">
+      <div class="flex items-center gap-3">
+        <button onclick="switchTab('admin')" class="px-3 py-1.5 rounded-xl bg-teal-900/40 border border-teal-500/30 text-teal-300 text-xs font-extrabold hover:bg-teal-800/60">
           Admin Console
         </button>
 
-        <button onclick="toggleAuthModal()" className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-emerald-950 font-extrabold text-xs shadow-md shadow-emerald-500/20 hover:brightness-110">
+        <button onclick="toggleAuthModal()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-emerald-950 font-extrabold text-xs shadow-md shadow-emerald-500/20 hover:brightness-110">
           Login / Signup
         </button>
       </div>
@@ -122,306 +122,332 @@
   </header>
 
   <!-- ================= MAIN APP BODY ================= -->
-  <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <div class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
     <!-- TAB 1: LANDING PAGE -->
-    <section id="tab-landing" className="tab-page space-y-16 py-4 pb-20">
+    <section id="tab-landing" class="tab-page space-y-16 py-4 pb-20">
       <!-- Hero Banner -->
-      <div className="relative rounded-3xl overflow-hidden glass-panel p-8 sm:p-12 lg:p-16 border border-emerald-500/30 bg-gradient-to-br from-emerald-950/90 via-emerald-900/50 to-teal-950/90 text-center space-y-6">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-xs font-bold shadow-lg">
+      <div class="relative rounded-3xl overflow-hidden glass-panel p-8 sm:p-12 lg:p-16 border border-emerald-500/30 bg-gradient-to-br from-emerald-950/90 via-emerald-900/50 to-teal-950/90 text-center space-y-6">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-xs font-bold shadow-lg">
           <span>✨ Next-Gen AI Powered Smart Agriculture</span>
         </div>
 
-        <h1 className="text-4xl sm:text-6xl font-black text-emerald-100 tracking-tight leading-tight">
-          AI Powered <br className="hidden sm:block" />
-          <span className="bg-gradient-to-r from-emerald-300 via-green-200 to-teal-300 bg-clip-text text-transparent glow-text">
+        <h1 class="text-4xl sm:text-6xl font-black text-emerald-100 tracking-tight leading-tight">
+          AI Powered <br class="hidden sm:block" />
+          <span class="bg-gradient-to-r from-emerald-300 via-green-200 to-teal-300 bg-clip-text text-transparent glow-text">
             Smart Farming Assistant
           </span>
         </h1>
 
-        <p className="text-base sm:text-lg text-emerald-100/80 max-w-2xl mx-auto leading-relaxed">
+        <p class="text-base sm:text-lg text-emerald-100/80 max-w-2xl mx-auto leading-relaxed">
           Detect plant diseases instantly, identify pests, receive 24/7 AI guidance, track weather risks, and improve crop health.
         </p>
 
         <!-- CTA Buttons -->
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-          <button onclick="switchTab('detection')" className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-green-500 to-teal-400 text-emerald-950 font-extrabold text-base shadow-xl shadow-emerald-500/30 hover:scale-105 hover:brightness-110 transition-all">
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <button onclick="switchTab('detection')" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-green-500 to-teal-400 text-emerald-950 font-extrabold text-base shadow-xl shadow-emerald-500/30 hover:scale-105 hover:brightness-110 transition-all">
             🔍 Detect Disease Now
           </button>
-          <button onclick="toggleChatbot()" className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-900/60 border border-emerald-500/40 text-emerald-200 font-bold text-base hover:bg-emerald-800/80 transition-all">
+          <button onclick="toggleChatbot()" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-900/60 border border-emerald-500/40 text-emerald-200 font-bold text-base hover:bg-emerald-800/80 transition-all">
             🤖 Talk to AI Assistant
           </button>
         </div>
 
         <!-- Live Statistics Counter Grid -->
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-12 border-t border-emerald-500/20 mt-12">
-          <div className="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
-            <span className="text-3xl font-black text-emerald-300 block">250,000+</span>
-            <span className="text-xs font-semibold text-emerald-200/70">Diseases Identified</span>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-12 border-t border-emerald-500/20 mt-12">
+          <div class="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
+            <span class="text-3xl font-black text-emerald-300 block">250,000+</span>
+            <span class="text-xs font-semibold text-emerald-200/70">Diseases Identified</span>
           </div>
-          <div className="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
-            <span className="text-3xl font-black text-emerald-300 block">85,000+</span>
-            <span className="text-xs font-semibold text-emerald-200/70">Farmers Using Platform</span>
+          <div class="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
+            <span class="text-3xl font-black text-emerald-300 block">85,000+</span>
+            <span class="text-xs font-semibold text-emerald-200/70">Farmers Using Platform</span>
           </div>
-          <div className="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
-            <span className="text-3xl font-black text-emerald-300 block">98.7%</span>
-            <span className="text-xs font-semibold text-emerald-200/70">AI Scan Accuracy</span>
+          <div class="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
+            <span class="text-3xl font-black text-emerald-300 block">98.7%</span>
+            <span class="text-xs font-semibold text-emerald-200/70">AI Scan Accuracy</span>
           </div>
-          <div className="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
-            <span className="text-3xl font-black text-emerald-300 block">500+</span>
-            <span className="text-xs font-semibold text-emerald-200/70">Verified Expert Doctors</span>
+          <div class="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
+            <span class="text-3xl font-black text-emerald-300 block">500+</span>
+            <span class="text-xs font-semibold text-emerald-200/70">Verified Expert Doctors</span>
           </div>
         </div>
       </div>
 
       <!-- Features Cards -->
-      <div className="space-y-6">
-        <h2 className="text-3xl font-bold text-emerald-100 text-center">Engineered for Maximum Crop Health</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div onclick="switchTab('detection')" className="glass-card p-6 rounded-3xl space-y-3 cursor-pointer">
-            <div className="text-3xl">🔬</div>
-            <h3 className="text-lg font-bold text-emerald-100">AI Disease Detection</h3>
-            <p className="text-xs text-emerald-100/70">Scan leaf, fruit, stem, and root photos for instant pathogen analysis & PDF reports.</p>
+      <div class="space-y-6">
+        <h2 class="text-3xl font-bold text-emerald-100 text-center">Engineered for Maximum Crop Health</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div onclick="switchTab('detection')" class="glass-card p-6 rounded-3xl space-y-3 cursor-pointer">
+            <div class="text-3xl">🔬</div>
+            <h3 class="text-lg font-bold text-emerald-100">AI Disease Detection</h3>
+            <p class="text-xs text-emerald-100/70">Scan leaf, fruit, stem, and root photos for instant pathogen analysis & PDF reports.</p>
           </div>
-          <div onclick="switchTab('detection')" className="glass-card p-6 rounded-3xl space-y-3 cursor-pointer">
-            <div className="text-3xl">🐛</div>
-            <h3 className="text-lg font-bold text-emerald-100">Pest & Bug Identification</h3>
-            <p className="text-xs text-emerald-100/70">Identify aphids, bollworms, and caterpillars with organic neem remedies.</p>
+          <div onclick="switchTab('detection')" class="glass-card p-6 rounded-3xl space-y-3 cursor-pointer">
+            <div class="text-3xl">🐛</div>
+            <h3 class="text-lg font-bold text-emerald-100">Pest & Bug Identification</h3>
+            <p class="text-xs text-emerald-100/70">Identify aphids, bollworms, and caterpillars with organic neem remedies.</p>
           </div>
-          <div onclick="toggleChatbot()" className="glass-card p-6 rounded-3xl space-y-3 cursor-pointer">
-            <div className="text-3xl">🤖</div>
-            <h3 className="text-lg font-bold text-emerald-100">24/7 AI Chatbot</h3>
-            <p className="text-xs text-emerald-100/70">Ask crop questions via voice, text, or photo upload in multiple languages.</p>
+          <div onclick="toggleChatbot()" class="glass-card p-6 rounded-3xl space-y-3 cursor-pointer">
+            <div class="text-3xl">🤖</div>
+            <h3 class="text-lg font-bold text-emerald-100">24/7 AI Chatbot</h3>
+            <p class="text-xs text-emerald-100/70">Ask crop questions via voice, text, or photo upload in multiple languages.</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- TAB 2: DISEASE DETECTION -->
-    <section id="tab-detection" className="tab-page hidden space-y-8 py-4 pb-20">
-      <div className="text-center space-y-2 max-w-2xl mx-auto">
-        <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-xs font-bold">Real-time Vision Pathology</span>
-        <h2 className="text-3xl font-black text-emerald-100">Plant Disease Diagnostics</h2>
-        <p className="text-xs text-emerald-300/70">Upload leaf photos, take live camera snapshots, or test demo plant samples.</p>
+    <section id="tab-detection" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2 max-w-2xl mx-auto">
+        <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-xs font-bold">Real-time Vision Pathology</span>
+        <h2 class="text-3xl font-black text-emerald-100">Plant Disease Diagnostics</h2>
+        <p class="text-xs text-emerald-300/70">Upload leaf photos, take live camera snapshots, or test demo plant samples.</p>
       </div>
 
-      <div className="max-w-4xl mx-auto glass-panel p-8 rounded-3xl border border-emerald-500/30 text-center space-y-6">
-        <div id="scanner-upload-box" className="border-2 border-dashed border-emerald-500/40 p-8 rounded-3xl space-y-4 bg-emerald-950/40 relative overflow-hidden">
-          <div id="laser-fx" className="hidden animate-laser-scan"></div>
-          <img id="scan-img-preview" src="https://images.unsplash.com/photo-1592417817098-8f3d6eb19657?w=600&q=80" alt="Plant leaf sample" className="w-full h-64 object-cover rounded-2xl border border-emerald-500/30 mx-auto max-w-md" />
+      <div class="max-w-4xl mx-auto glass-panel p-8 rounded-3xl border border-emerald-500/30 text-center space-y-6">
+        <div id="scanner-upload-box" class="border-2 border-dashed border-emerald-500/40 p-8 rounded-3xl space-y-4 bg-emerald-950/40 relative overflow-hidden">
+          <div id="laser-fx" class="hidden animate-laser-scan"></div>
+          <img id="scan-img-preview" src="https://images.unsplash.com/photo-1592417817098-8f3d6eb19657?w=600&q=80" alt="Plant leaf sample" class="w-full h-64 object-cover rounded-2xl border border-emerald-500/30 mx-auto max-w-md" />
           
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <button onclick="runAiDiseaseScan('Tomato Late Blight')" className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-emerald-950 font-black text-xs shadow-lg hover:brightness-110">
+          <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <button onclick="runAiDiseaseScan('Tomato Late Blight')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-emerald-950 font-black text-xs shadow-lg hover:brightness-110">
               Run AI Diagnostic Scan
             </button>
-            <button onclick="triggerCameraFeed()" className="px-6 py-3 rounded-xl bg-emerald-900/60 border border-emerald-500/30 text-emerald-200 font-bold text-xs">
+            <button onclick="triggerCameraFeed()" class="px-6 py-3 rounded-xl bg-emerald-900/60 border border-emerald-500/30 text-emerald-200 font-bold text-xs">
               📸 Take Live Camera Photo
             </button>
           </div>
         </div>
 
         <!-- Sample Leaf Test Chips -->
-        <div className="pt-4 border-t border-emerald-900/40 space-y-2">
-          <span className="text-xs font-semibold text-emerald-300/70 block uppercase">Test Demo Crop Samples:</span>
-          <div className="flex flex-wrap justify-center gap-2">
-            <button onclick="runAiDiseaseScan('Tomato Late Blight')" className="px-3 py-1.5 rounded-xl bg-emerald-900/40 border border-emerald-500/20 text-xs font-bold text-emerald-200">Tomato Late Blight Leaf</button>
-            <button onclick="runAiDiseaseScan('Rice Blast Disease')" className="px-3 py-1.5 rounded-xl bg-emerald-900/40 border border-emerald-500/20 text-xs font-bold text-emerald-200">Paddy Rice Blast Leaf</button>
-            <button onclick="runAiDiseaseScan('Wheat Yellow Rust')" className="px-3 py-1.5 rounded-xl bg-emerald-900/40 border border-emerald-500/20 text-xs font-bold text-emerald-200">Wheat Yellow Rust Leaf</button>
+        <div class="pt-4 border-t border-emerald-900/40 space-y-2">
+          <span class="text-xs font-semibold text-emerald-300/70 block uppercase">Test Demo Crop Samples:</span>
+          <div class="flex flex-wrap justify-center gap-2">
+            <button onclick="runAiDiseaseScan('Tomato Late Blight')" class="px-3 py-1.5 rounded-xl bg-emerald-900/40 border border-emerald-500/20 text-xs font-bold text-emerald-200">Tomato Late Blight Leaf</button>
+            <button onclick="runAiDiseaseScan('Rice Blast Disease')" class="px-3 py-1.5 rounded-xl bg-emerald-900/40 border border-emerald-500/20 text-xs font-bold text-emerald-200">Paddy Rice Blast Leaf</button>
+            <button onclick="runAiDiseaseScan('Wheat Yellow Rust')" class="px-3 py-1.5 rounded-xl bg-emerald-900/40 border border-emerald-500/20 text-xs font-bold text-emerald-200">Wheat Yellow Rust Leaf</button>
           </div>
         </div>
       </div>
 
       <!-- Diagnostic Results Card -->
-      <div id="diagnostic-result-card" className="hidden max-w-4xl mx-auto glass-panel p-8 rounded-3xl border border-emerald-500/40 space-y-6 bg-gradient-to-br from-emerald-950 via-emerald-900/50 to-teal-950">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-emerald-800/40">
+      <div id="diagnostic-result-card" class="hidden max-w-4xl mx-auto glass-panel p-8 rounded-3xl border border-emerald-500/40 space-y-6 bg-gradient-to-br from-emerald-950 via-emerald-900/50 to-teal-950">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-emerald-800/40">
           <div>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Fungal Pathogen</span>
-            <h3 id="diag-name" className="text-2xl font-black text-emerald-100 mt-1">Tomato Late Blight (Phytophthora infestans)</h3>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Fungal Pathogen</span>
+            <h3 id="diag-name" class="text-2xl font-black text-emerald-100 mt-1">Tomato Late Blight (Phytophthora infestans)</h3>
           </div>
-          <button onclick="downloadPdfReport()" className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-emerald-950 font-black text-xs shadow-lg">
+          <button onclick="downloadPdfReport()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-emerald-950 font-black text-xs shadow-lg">
             📥 Download PDF Report
           </button>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="p-3 rounded-xl bg-emerald-900/40 border border-emerald-500/20">
-            <span className="text-[10px] text-emerald-400 font-bold block uppercase">AI Confidence</span>
-            <span className="text-xl font-black text-emerald-200">96.8%</span>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="p-3 rounded-xl bg-emerald-900/40 border border-emerald-500/20">
+            <span class="text-[10px] text-emerald-400 font-bold block uppercase">AI Confidence</span>
+            <span class="text-xl font-black text-emerald-200">96.8%</span>
           </div>
-          <div className="p-3 rounded-xl bg-emerald-900/40 border border-emerald-500/20">
-            <span className="text-[10px] text-emerald-400 font-bold block uppercase">Severity</span>
-            <span className="text-xl font-black text-amber-400">High</span>
+          <div class="p-3 rounded-xl bg-emerald-900/40 border border-emerald-500/20">
+            <span class="text-[10px] text-emerald-400 font-bold block uppercase">Severity</span>
+            <span class="text-xl font-black text-amber-400">High</span>
           </div>
-          <div className="p-3 rounded-xl bg-emerald-900/40 border border-emerald-500/20">
-            <span className="text-[10px] text-emerald-400 font-bold block uppercase">Affected Area</span>
-            <span className="text-sm font-bold text-emerald-100">35% of foliage</span>
+          <div class="p-3 rounded-xl bg-emerald-900/40 border border-emerald-500/20">
+            <span class="text-[10px] text-emerald-400 font-bold block uppercase">Affected Area</span>
+            <span class="text-sm font-bold text-emerald-100">35% of foliage</span>
           </div>
-          <div className="p-3 rounded-xl bg-emerald-900/40 border border-emerald-500/20">
-            <span className="text-[10px] text-emerald-400 font-bold block uppercase">Health Score</span>
-            <span className="text-xl font-black text-emerald-300">62/100</span>
+          <div class="p-3 rounded-xl bg-emerald-900/40 border border-emerald-500/20">
+            <span class="text-[10px] text-emerald-400 font-bold block uppercase">Health Score</span>
+            <span class="text-xl font-black text-emerald-300">62/100</span>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-500/30 space-y-2">
-            <h4 className="text-xs font-bold text-emerald-300">🌱 Organic Remedies</h4>
-            <p className="text-xs text-emerald-100/80">• Apply Copper Octanoate / Liquid Copper Fungicide spray twice weekly.</p>
-            <p className="text-xs text-emerald-100/80">• Spray Neem Oil (0.5% concentration) combined with potassium bicarbonate.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-500/30 space-y-2">
+            <h4 class="text-xs font-bold text-emerald-300">🌱 Organic Remedies</h4>
+            <p class="text-xs text-emerald-100/80">• Apply Copper Octanoate / Liquid Copper Fungicide spray twice weekly.</p>
+            <p class="text-xs text-emerald-100/80">• Spray Neem Oil (0.5% concentration) combined with potassium bicarbonate.</p>
           </div>
-          <div className="p-4 rounded-2xl bg-emerald-950/60 border border-amber-500/30 space-y-2">
-            <h4 className="text-xs font-bold text-amber-300">🧪 Chemical Remedies</h4>
-            <p className="text-xs text-emerald-100/80">• Apply Chlorothalonil or Mancozeb preventative sprays.</p>
-            <p className="text-xs text-emerald-100/80">• Use systemic fungicides such as Cymoxanil or Dimethomorph.</p>
+          <div class="p-4 rounded-2xl bg-emerald-950/60 border border-amber-500/30 space-y-2">
+            <h4 class="text-xs font-bold text-amber-300">🧪 Chemical Remedies</h4>
+            <p class="text-xs text-emerald-100/80">• Apply Chlorothalonil or Mancozeb preventative sprays.</p>
+            <p class="text-xs text-emerald-100/80">• Use systemic fungicides such as Cymoxanil or Dimethomorph.</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- TAB 3: DASHBOARD -->
-    <section id="tab-dashboard" className="tab-page hidden space-y-8 py-4 pb-20">
-      <div className="glass-panel p-8 rounded-3xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950 to-teal-950 space-y-2">
-        <h2 className="text-3xl font-extrabold text-emerald-100">Good Afternoon, Farmer Ramesh! 🌾</h2>
-        <p className="text-xs text-emerald-300/80">Your primary crops (Tomato & Wheat) in Punjab have an average health index of <strong className="text-emerald-300">88/100</strong>.</p>
+    <section id="tab-dashboard" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="glass-panel p-8 rounded-3xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950 to-teal-950 space-y-2">
+        <h2 class="text-3xl font-extrabold text-emerald-100">Good Afternoon, Farmer Ramesh! 🌾</h2>
+        <p class="text-xs text-emerald-300/80">Your primary crops (Tomato & Wheat) in Punjab have an average health index of <strong class="text-emerald-300">88/100</strong>.</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
-        <div className="glass-card p-5 rounded-3xl space-y-2">
-          <span className="text-[10px] font-bold text-emerald-400 uppercase">Recent Scan</span>
-          <h3 className="text-sm font-bold text-emerald-100">Tomato Late Blight</h3>
-          <span className="text-xs text-amber-400 font-bold">Severity: High (96.8%)</span>
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-6">
+        <div class="glass-card p-5 rounded-3xl space-y-2">
+          <span class="text-[10px] font-bold text-emerald-400 uppercase">Recent Scan</span>
+          <h3 class="text-sm font-bold text-emerald-100">Tomato Late Blight</h3>
+          <span class="text-xs text-amber-400 font-bold">Severity: High (96.8%)</span>
         </div>
-        <div className="glass-card p-5 rounded-3xl space-y-2">
-          <span className="text-[10px] font-bold text-emerald-400 uppercase">Today's Weather</span>
-          <h3 className="text-xl font-black text-emerald-100">28°C</h3>
-          <span className="text-xs text-emerald-300/80">Humidity: 68%</span>
+        <div class="glass-card p-5 rounded-3xl space-y-2">
+          <span class="text-[10px] font-bold text-emerald-400 uppercase">Today's Weather</span>
+          <h3 class="text-xl font-black text-emerald-100">28°C</h3>
+          <span class="text-xs text-emerald-300/80">Humidity: 68%</span>
         </div>
-        <div className="glass-card p-5 rounded-3xl space-y-2">
-          <span className="text-[10px] font-bold text-emerald-400 uppercase">Crop Health Index</span>
-          <h3 className="text-2xl font-black text-emerald-300">88 / 100</h3>
-          <span className="text-xs text-emerald-400 font-bold">Optimal Condition</span>
+        <div class="glass-card p-5 rounded-3xl space-y-2">
+          <span class="text-[10px] font-bold text-emerald-400 uppercase">Crop Health Index</span>
+          <h3 class="text-2xl font-black text-emerald-300">88 / 100</h3>
+          <span class="text-xs text-emerald-400 font-bold">Optimal Condition</span>
         </div>
-        <div className="glass-card p-5 rounded-3xl space-y-2">
-          <span className="text-[10px] font-bold text-teal-400 uppercase">Pending Consultation</span>
-          <h3 className="text-sm font-bold text-emerald-100">Dr. Rajesh Kumar</h3>
-          <span className="text-xs text-teal-300 font-bold">Today @ 04:00 PM</span>
+        <div class="glass-card p-5 rounded-3xl space-y-2">
+          <span class="text-[10px] font-bold text-teal-400 uppercase">Pending Consultation</span>
+          <h3 class="text-sm font-bold text-emerald-100">Dr. Rajesh Kumar</h3>
+          <span class="text-xs text-teal-300 font-bold">Today @ 04:00 PM</span>
         </div>
       </div>
     </section>
 
     <!-- TAB 4: CROP LIBRARY -->
-    <section id="tab-crops" className="tab-page hidden space-y-8 py-4 pb-20">
-      <div className="text-center space-y-2 max-w-2xl mx-auto">
-        <h2 className="text-3xl font-extrabold text-emerald-100">Crop Library</h2>
-        <p className="text-xs text-emerald-300/70">Agronomic guides for soil pH, climate, water, and market prices.</p>
+    <section id="tab-crops" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2 max-w-2xl mx-auto">
+        <h2 class="text-3xl font-extrabold text-emerald-100">Crop Library</h2>
+        <p class="text-xs text-emerald-300/70">Agronomic guides for soil pH, climate, water, and market prices.</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        <div className="glass-card p-5 rounded-3xl space-y-3">
-          <img src="https://images.unsplash.com/photo-1536657464919-892534f60d6e?w=500&q=80" alt="Rice" className="w-full h-40 object-cover rounded-2xl" />
-          <h3 className="text-lg font-bold text-emerald-100">Rice (Paddy)</h3>
-          <p className="text-xs text-emerald-300/80">Ideal Climate: 20°C - 35°C | Soil pH: 5.5 - 6.5</p>
-          <span className="text-sm font-black text-emerald-300 block">$380 / Ton</span>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1536657464919-892534f60d6e?w=500&q=80" alt="Rice" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-lg font-bold text-emerald-100">Rice (Paddy)</h3>
+          <p class="text-xs text-emerald-300/80">Ideal Climate: 20°C - 35°C | Soil pH: 5.5 - 6.5</p>
+          <span class="text-sm font-black text-emerald-300 block">$380 / Ton</span>
         </div>
 
-        <div className="glass-card p-5 rounded-3xl space-y-3">
-          <img src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=500&q=80" alt="Wheat" className="w-full h-40 object-cover rounded-2xl" />
-          <h3 className="text-lg font-bold text-emerald-100">Wheat</h3>
-          <p className="text-xs text-emerald-300/80">Ideal Climate: 10°C - 25°C | Soil pH: 6.0 - 7.5</p>
-          <span className="text-sm font-black text-emerald-300 block">$290 / Ton</span>
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=500&q=80" alt="Wheat" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-lg font-bold text-emerald-100">Wheat</h3>
+          <p class="text-xs text-emerald-300/80">Ideal Climate: 10°C - 25°C | Soil pH: 6.0 - 7.5</p>
+          <span class="text-sm font-black text-emerald-300 block">$290 / Ton</span>
         </div>
 
-        <div className="glass-card p-5 rounded-3xl space-y-3">
-          <img src="https://images.unsplash.com/photo-1592417817098-8f3d6eb19657?w=500&q=80" alt="Tomato" className="w-full h-40 object-cover rounded-2xl" />
-          <h3 className="text-lg font-bold text-emerald-100">Tomato</h3>
-          <p className="text-xs text-emerald-300/80">Ideal Climate: 18°C - 28°C | Soil pH: 6.0 - 6.8</p>
-          <span className="text-sm font-black text-emerald-300 block">$420 / Ton</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 5: WEATHER -->
-    <section id="tab-weather" className="tab-page hidden space-y-8 py-4 pb-20">
-      <div className="glass-panel p-8 rounded-3xl border border-emerald-500/30 text-center space-y-4 max-w-3xl mx-auto">
-        <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-xs font-bold">Hyper-Local Microclimate</span>
-        <h2 className="text-4xl font-black text-emerald-100">28°C <span className="text-sm font-normal text-emerald-300/80">Partly Cloudy</span></h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-4">
-          <div className="p-3 rounded-2xl bg-emerald-900/40 border border-emerald-500/20">Humidity: 68%</div>
-          <div className="p-3 rounded-2xl bg-emerald-900/40 border border-emerald-500/20">Wind: 14 km/h</div>
-          <div className="p-3 rounded-2xl bg-emerald-900/40 border border-emerald-500/20">Rain Chance: 10%</div>
-          <div className="p-3 rounded-2xl bg-emerald-900/40 border border-emerald-500/20">UV Index: 6.2</div>
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1592417817098-8f3d6eb19657?w=500&q=80" alt="Tomato" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-lg font-bold text-emerald-100">Tomato</h3>
+          <p class="text-xs text-emerald-300/80">Ideal Climate: 18°C - 28°C | Soil pH: 6.0 - 6.8</p>
+          <span class="text-sm font-black text-emerald-300 block">$420 / Ton</span>
         </div>
       </div>
     </section>
 
-    <!-- TAB 6: MARKETPLACE -->
-    <section id="tab-marketplace" className="tab-page hidden space-y-8 py-4 pb-20">
-      <div className="text-center space-y-2">
+    <!-- TAB 5: KNOWLEDGE -->
+    <section id="tab-knowledge" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2 max-w-2xl mx-auto">
+        <h2 class="text-3xl font-extrabold text-emerald-100">Knowledge Center</h2>
+        <p class="text-xs text-emerald-300/70">Guides for organic farming, hydroponics, and government subsidies.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=500&q=80" alt="Organic Formulation" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-base font-bold text-emerald-100">Organic Bio-Pesticides Guide</h3>
+          <p class="text-xs text-emerald-100/70">Learn how to formulate natural bio-pesticides using neem leaves and buttermilk.</p>
+        </div>
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1558449028-b53a39d100fc?w=500&q=80" alt="Hydroponics" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-base font-bold text-emerald-100">Hydroponics & Vertical Farming</h3>
+          <p class="text-xs text-emerald-100/70">Maximize crop yield per square foot using indoor NFT hydroponic pipes.</p>
+        </div>
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500&q=80" alt="Government Subsidies" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-base font-bold text-emerald-100">Government Drip Subsidy 2026</h3>
+          <p class="text-xs text-emerald-100/70">Claim up to 80% subsidy on precision drip lines and solar water pumps.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6: WEATHER -->
+    <section id="tab-weather" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="glass-panel p-8 rounded-3xl border border-emerald-500/30 text-center space-y-4 max-w-3xl mx-auto">
+        <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-xs font-bold">Hyper-Local Microclimate</span>
+        <h2 class="text-4xl font-black text-emerald-100">28°C <span class="text-sm font-normal text-emerald-300/80">Partly Cloudy</span></h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-4">
+          <div class="p-3 rounded-2xl bg-emerald-900/40 border border-emerald-500/20">Humidity: 68%</div>
+          <div class="p-3 rounded-2xl bg-emerald-900/40 border border-emerald-500/20">Wind: 14 km/h</div>
+          <div class="p-3 rounded-2xl bg-emerald-900/40 border border-emerald-500/20">Rain Chance: 10%</div>
+          <div class="p-3 rounded-2xl bg-emerald-900/40 border border-emerald-500/20">UV Index: 6.2</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 7: MARKETPLACE -->
+    <section id="tab-marketplace" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2">
         <h2 className="text-3xl font-extrabold text-emerald-100">Agri-Marketplace</h2>
-        <p className="text-xs text-emerald-300/70">Certified bio-pesticides, organic fertilizers, seeds, and smart irrigation kits.</p>
+        <p class="text-xs text-emerald-300/70">Certified bio-pesticides, organic fertilizers, seeds, and smart irrigation kits.</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        <div className="glass-card p-5 rounded-3xl space-y-3">
-          <img src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&q=80" alt="Copper Fungicide" className="w-full h-40 object-cover rounded-2xl" />
-          <h3 className="text-base font-bold text-emerald-100">AgroShield Copper Bio-Fungicide</h3>
-          <span className="text-lg font-black text-emerald-300 block">$24.99</span>
-          <button onclick="alert('Item added to cart!')" className="w-full py-2 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs">Add to Cart</button>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&q=80" alt="Copper Fungicide" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-base font-bold text-emerald-100">AgroShield Copper Bio-Fungicide</h3>
+          <span class="text-lg font-black text-emerald-300 block">$24.99</span>
+          <button onclick="alert('Item added to cart!')" class="w-full py-2 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs">Add to Cart</button>
         </div>
 
-        <div className="glass-card p-5 rounded-3xl space-y-3">
-          <img src="https://images.unsplash.com/photo-1585314062340-f1a5a7c9328d?w=500&q=80" alt="Nano Nitrogen" className="w-full h-40 object-cover rounded-2xl" />
-          <h3 className="text-base font-bold text-emerald-100">Nano Nitrogen Bio-Foliar Spray</h3>
-          <span className="text-lg font-black text-emerald-300 block">$18.50</span>
-          <button onclick="alert('Item added to cart!')" className="w-full py-2 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs">Add to Cart</button>
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1585314062340-f1a5a7c9328d?w=500&q=80" alt="Nano Nitrogen" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-base font-bold text-emerald-100">Nano Nitrogen Bio-Foliar Spray</h3>
+          <span class="text-lg font-black text-emerald-300 block">$18.50</span>
+          <button onclick="alert('Item added to cart!')" class="w-full py-2 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs">Add to Cart</button>
         </div>
 
-        <div className="glass-card p-5 rounded-3xl space-y-3">
-          <img src="https://images.unsplash.com/photo-1592417817098-8f3d6eb19657?w=500&q=80" alt="Tomato Seeds" className="w-full h-40 object-cover rounded-2xl" />
-          <h3 className="text-base font-bold text-emerald-100">Hybrid Tomato Seeds (100g)</h3>
-          <span className="text-lg font-black text-emerald-300 block">$32.00</span>
-          <button onclick="alert('Item added to cart!')" className="w-full py-2 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs">Add to Cart</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 7: CONSULTATION -->
-    <section id="tab-consultation" className="tab-page hidden space-y-8 py-4 pb-20">
-      <div className="text-center space-y-2">
-        <h2 className="text-3xl font-extrabold text-emerald-100">Book Agronomist Consultation</h2>
-        <p className="text-xs text-emerald-300/70">Connect 1-on-1 with certified plant pathologists via Video/Voice call.</p>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        <div className="glass-card p-6 rounded-3xl space-y-3 text-center">
-          <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=300&q=80" alt="Doctor" className="w-20 h-20 rounded-full object-cover mx-auto border-2 border-emerald-400/40" />
-          <h3 className="text-base font-bold text-emerald-100">Dr. Rajesh Kumar, Ph.D.</h3>
-          <p className="text-xs text-emerald-300/80">Senior Plant Pathologist (18 yrs exp)</p>
-          <span className="text-sm font-black text-emerald-300 block">$25.00 / session</span>
-          <button onclick="alert('Appointment slot reserved for Today at 4:00 PM!')" className="w-full py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-emerald-950 font-extrabold text-xs">Book Video Call</button>
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1592417817098-8f3d6eb19657?w=500&q=80" alt="Tomato Seeds" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-base font-bold text-emerald-100">Hybrid Tomato Seeds (100g)</h3>
+          <span class="text-lg font-black text-emerald-300 block">$32.00</span>
+          <button onclick="alert('Item added to cart!')" class="w-full py-2 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs">Add to Cart</button>
         </div>
       </div>
     </section>
 
-    <!-- TAB 8: ADMIN -->
-    <section id="tab-admin" className="tab-page hidden space-y-8 py-4 pb-20">
-      <div className="glass-panel p-8 rounded-3xl border border-emerald-500/30 space-y-4">
-        <h2 className="text-3xl font-extrabold text-emerald-100">AgroGen Super Admin Console</h2>
-        <div className="grid grid-cols-4 gap-4 text-center">
-          <div className="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
-            <span className="text-2xl font-black text-emerald-300 block">85,420</span>
-            <span className="text-[10px] text-emerald-200/70">Farmers</span>
+    <!-- TAB 8: CONSULTATION -->
+    <section id="tab-consultation" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2">
+        <h2 class="text-3xl font-extrabold text-emerald-100">Book Agronomist Consultation</h2>
+        <p class="text-xs text-emerald-300/70">Connect 1-on-1 with certified plant pathologists via Video/Voice call.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div class="glass-card p-6 rounded-3xl space-y-3 text-center">
+          <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=300&q=80" alt="Doctor" class="w-20 h-20 rounded-full object-cover mx-auto border-2 border-emerald-400/40" />
+          <h3 class="text-base font-bold text-emerald-100">Dr. Rajesh Kumar, Ph.D.</h3>
+          <p class="text-xs text-emerald-300/80">Senior Plant Pathologist (18 yrs exp)</p>
+          <span class="text-sm font-black text-emerald-300 block">$25.00 / session</span>
+          <button onclick="alert('Appointment slot reserved for Today at 4:00 PM!')" class="w-full py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-emerald-950 font-extrabold text-xs">Book Video Call</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 9: ADMIN -->
+    <section id="tab-admin" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="glass-panel p-8 rounded-3xl border border-emerald-500/30 space-y-4">
+        <h2 class="text-3xl font-extrabold text-emerald-100">AgroGen Super Admin Console</h2>
+        <div class="grid grid-cols-4 gap-4 text-center">
+          <div class="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
+            <span class="text-2xl font-black text-emerald-300 block">85,420</span>
+            <span class="text-[10px] text-emerald-200/70">Farmers</span>
           </div>
-          <div className="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
-            <span className="text-2xl font-black text-teal-300 block">512</span>
-            <span className="text-[10px] text-emerald-200/70">Doctors</span>
+          <div class="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
+            <span class="text-2xl font-black text-teal-300 block">512</span>
+            <span class="text-[10px] text-emerald-200/70">Doctors</span>
           </div>
-          <div className="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
-            <span className="text-2xl font-black text-cyan-300 block">250,910</span>
-            <span className="text-[10px] text-emerald-200/70">AI Scans</span>
+          <div class="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
+            <span class="text-2xl font-black text-cyan-300 block">250,910</span>
+            <span class="text-[10px] text-emerald-200/70">AI Scans</span>
           </div>
-          <div className="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
-            <span className="text-2xl font-black text-emerald-200 block">99.98%</span>
-            <span className="text-[10px] text-emerald-200/70">Uptime</span>
+          <div class="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
+            <span class="text-2xl font-black text-emerald-200 block">99.98%</span>
+            <span class="text-[10px] text-emerald-200/70">Uptime</span>
           </div>
         </div>
       </div>
@@ -430,49 +456,49 @@
   </div>
 
   <!-- ================= FLOATING AI CHATBOT ================= -->
-  <div className="fixed bottom-6 right-6 z-50">
-    <div id="chatbot-box" className="hidden w-80 sm:w-96 h-[500px] glass-panel rounded-3xl border border-emerald-500/40 p-4 flex flex-col justify-between shadow-2xl bg-emerald-950/95 backdrop-blur-xl">
-      <div className="flex items-center justify-between pb-3 border-b border-emerald-800/40">
-        <div className="flex items-center gap-2">
-          <span className="text-lg">🤖</span>
-          <span className="text-xs font-bold text-emerald-100">AgroGen AI 24/7 Advisor</span>
+  <div class="fixed bottom-6 right-6 z-50">
+    <div id="chatbot-box" class="hidden w-80 sm:w-96 h-[500px] glass-panel rounded-3xl border border-emerald-500/40 p-4 flex flex-col justify-between shadow-2xl bg-emerald-950/95 backdrop-blur-xl">
+      <div class="flex items-center justify-between pb-3 border-b border-emerald-800/40">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">🤖</span>
+          <span class="text-xs font-bold text-emerald-100">AgroGen AI 24/7 Advisor</span>
         </div>
-        <button onclick="toggleChatbot()" className="text-emerald-300 hover:text-rose-400 font-bold text-xs">✕</button>
+        <button onclick="toggleChatbot()" class="text-emerald-300 hover:text-rose-400 font-bold text-xs">✕</button>
       </div>
 
-      <div id="chat-messages" className="flex-1 overflow-y-auto space-y-3 py-3 pr-1 text-xs">
-        <div className="p-3 rounded-2xl bg-emerald-900/60 border border-emerald-500/20 text-emerald-100 max-w-[85%]">
+      <div id="chat-messages" class="flex-1 overflow-y-auto space-y-3 py-3 pr-1 text-xs">
+        <div class="p-3 rounded-2xl bg-emerald-900/60 border border-emerald-500/20 text-emerald-100 max-w-[85%]">
           Hello! I am AgroGen 24/7 AI Smart Assistant. Ask me anything about diseases, fertilizers, or watering schedules!
         </div>
       </div>
 
-      <div className="pt-2 border-t border-emerald-800/40 flex items-center gap-2">
-        <input type="text" id="chat-input-text" placeholder="Ask AgroGen AI..." onkeydown="if(event.key==='Enter') sendChatMessage()" className="flex-1 bg-emerald-950 border border-emerald-500/30 rounded-xl px-3 py-2 text-xs text-emerald-100 focus:outline-none" />
-        <button onclick="sendChatMessage()" className="px-4 py-2 bg-emerald-500 text-emerald-950 font-bold text-xs rounded-xl shadow">Send</button>
+      <div class="pt-2 border-t border-emerald-800/40 flex items-center gap-2">
+        <input type="text" id="chat-input-text" placeholder="Ask AgroGen AI..." onkeydown="if(event.key==='Enter') sendChatMessage()" class="flex-1 bg-emerald-950 border border-emerald-500/30 rounded-xl px-3 py-2 text-xs text-emerald-100 focus:outline-none" />
+        <button onclick="sendChatMessage()" class="px-4 py-2 bg-emerald-500 text-emerald-950 font-bold text-xs rounded-xl shadow">Send</button>
       </div>
     </div>
 
-    <button id="chatbot-trigger-btn" onclick="toggleChatbot()" className="p-4 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-400 text-emerald-950 font-black shadow-2xl hover:scale-110 transition-transform">
+    <button id="chatbot-trigger-btn" onclick="toggleChatbot()" class="p-4 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-400 text-emerald-950 font-black shadow-2xl hover:scale-110 transition-transform">
       🤖 AI 24/7
     </button>
   </div>
 
   <!-- ================= AUTH MODAL ================= -->
-  <div id="auth-modal" className="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-    <div className="w-full max-w-md glass-panel rounded-3xl border border-emerald-500/30 p-6 space-y-6 relative shadow-2xl">
-      <button onclick="toggleAuthModal()" className="absolute top-5 right-5 text-emerald-300 hover:text-rose-400 font-bold">✕</button>
-      <h3 className="text-2xl font-bold text-emerald-100 text-center">Login to AgroGen</h3>
+  <div id="auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="w-full max-w-md glass-panel rounded-3xl border border-emerald-500/30 p-6 space-y-6 relative shadow-2xl">
+      <button onclick="toggleAuthModal()" class="absolute top-5 right-5 text-emerald-300 hover:text-rose-400 font-bold">✕</button>
+      <h3 class="text-2xl font-bold text-emerald-100 text-center">Login to AgroGen</h3>
       
-      <form onsubmit="event.preventDefault(); toggleAuthModal(); alert('Welcome back to AgroGen!');" className="space-y-4 text-xs">
+      <form onsubmit="event.preventDefault(); toggleAuthModal(); alert('Welcome back to AgroGen!');" class="space-y-4 text-xs">
         <div>
-          <label className="text-emerald-200 block mb-1">Email Address</label>
-          <input type="email" required placeholder="farmer@agrogen.ai" className="w-full px-3 py-2.5 rounded-xl bg-emerald-900/30 border border-emerald-500/30 text-emerald-100 focus:outline-none" />
+          <label class="text-emerald-200 block mb-1">Email Address</label>
+          <input type="email" required placeholder="farmer@agrogen.ai" class="w-full px-3 py-2.5 rounded-xl bg-emerald-900/30 border border-emerald-500/30 text-emerald-100 focus:outline-none" />
         </div>
         <div>
-          <label className="text-emerald-200 block mb-1">Password</label>
-          <input type="password" required placeholder="••••••••" className="w-full px-3 py-2.5 rounded-xl bg-emerald-900/30 border border-emerald-500/30 text-emerald-100 focus:outline-none" />
+          <label class="text-emerald-200 block mb-1">Password</label>
+          <input type="password" required placeholder="••••••••" class="w-full px-3 py-2.5 rounded-xl bg-emerald-900/30 border border-emerald-500/30 text-emerald-100 focus:outline-none" />
         </div>
-        <button type="submit" className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-emerald-950 font-black text-xs shadow-lg">Login to Platform</button>
+        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-emerald-950 font-black text-xs shadow-lg">Login to Platform</button>
       </form>
     </div>
   </div>
@@ -545,7 +571,7 @@
       if (!text) return;
 
       const container = document.getElementById('chat-messages');
-      container.innerHTML += `<div className="p-3 rounded-2xl bg-emerald-500 text-emerald-950 font-bold ml-auto max-w-[85%]">${text}</div>`;
+      container.innerHTML += `<div class="p-3 rounded-2xl bg-emerald-500 text-emerald-950 font-bold ml-auto max-w-[85%]">${text}</div>`;
       input.value = '';
 
       setTimeout(() => {
@@ -553,7 +579,7 @@
         if (text.toLowerCase().includes('yellow')) reply = "Yellowing leaves indicate Nitrogen deficiency. Apply a foliar spray of Liquid Bio-Nitrogen or Vermicompost tea.";
         if (text.toLowerCase().includes('fertilizer')) reply = "Use balanced NPK 19:19:19 for vegetative growth and High-Potash for fruit bloom.";
         
-        container.innerHTML += `<div className="p-3 rounded-2xl bg-emerald-900/60 border border-emerald-500/20 text-emerald-100 max-w-[85%]">${reply}</div>`;
+        container.innerHTML += `<div class="p-3 rounded-2xl bg-emerald-900/60 border border-emerald-500/20 text-emerald-100 max-w-[85%]">${reply}</div>`;
         container.scrollTop = container.scrollHeight;
       }, 500);
     }
