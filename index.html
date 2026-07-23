@@ -1,13 +1,1271 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AgroGen - AI Powered Smart Farming Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  </head>
-  <body class="bg-[#09100c] text-emerald-100 min-h-screen">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgroGen - AI Powered Smart Farming Platform</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- jsPDF for PDF Report Generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- Canvas Confetti for Achievements -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <!-- Google Fonts Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #09100c;
+      color: #f0fdf4;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* Glassmorphic Design Tokens */
+    .glass-panel {
+      background: rgba(18, 30, 22, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(74, 222, 128, 0.18);
+    }
+
+    .glass-card {
+      background: linear-gradient(135deg, rgba(22, 38, 28, 0.85) 0%, rgba(13, 24, 17, 0.9) 100%);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(74, 222, 128, 0.15);
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(74, 222, 128, 0.5);
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 12px 35px -5px rgba(34, 197, 94, 0.3);
+    }
+
+    /* Keyframe Animations */
+    @keyframes floatGlow {
+      0%, 100% { transform: translateY(0px) scale(1); opacity: 0.35; }
+      50% { transform: translateY(-10px) scale(1.02); opacity: 0.5; }
+    }
+
+    .animate-pulse-glow {
+      animation: floatGlow 6s infinite ease-in-out;
+    }
+
+    @keyframes laserScan {
+      0% { top: 0%; opacity: 0.7; }
+      50% { top: 95%; opacity: 1; }
+      100% { top: 0%; opacity: 0.7; }
+    }
+
+    .animate-laser-scan {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #34d399, #6ee7b7, #34d399, transparent);
+      box-shadow: 0 0 20px 4px rgba(52, 211, 153, 0.8);
+      animation: laserScan 2.5s infinite ease-in-out;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fadeInUp {
+      animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .tab-page {
+      animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(9, 16, 12, 0.9); }
+    ::-webkit-scrollbar-thumb { background: rgba(34, 197, 94, 0.3); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(34, 197, 94, 0.6); }
+  </style>
+</head>
+<body class="bg-[#09100c] text-emerald-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-emerald-950">
+
+  <!-- Ambient glowing orbs -->
+  <div class="fixed top-[-10%] left-[-10%] w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse-glow pointer-events-none z-0"></div>
+  <div class="fixed bottom-[-10%] right-[-10%] w-96 h-96 bg-teal-500/10 rounded-full blur-3xl animate-pulse-glow pointer-events-none z-0" style="animation-delay: -3s;"></div>
+
+  <!-- ================= TOP HEADER NAVBAR ================= -->
+  <header class="glass-panel sticky top-0 z-40 border-b border-emerald-500/20 bg-emerald-950/80 backdrop-blur-xl px-6 py-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <div onclick="switchTab('landing')" class="flex items-center gap-3 cursor-pointer group shrink-0">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 p-0.5">
+          <div class="w-full h-full bg-emerald-950 rounded-[10px] flex items-center justify-center font-bold text-emerald-300">🌿</div>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-xl font-extrabold text-emerald-100 tracking-tight leading-none bg-gradient-to-r from-emerald-300 to-teal-200 bg-clip-text text-transparent">AgroGen AI</span>
+          <span class="text-[9px] text-emerald-400 font-bold uppercase tracking-widest mt-0.5">Smart Farming Platform</span>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="hidden lg:flex items-center gap-2 text-xs font-semibold">
+        <button id="nav-landing" onclick="switchTab('landing')" class="nav-btn px-3 py-1.5 rounded-lg transition-all bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">Home</button>
+        <button id="nav-dashboard" onclick="switchTab('dashboard')" class="nav-btn px-3 py-1.5 rounded-lg text-emerald-200/70 hover:text-emerald-200">Dashboard</button>
+        <button id="nav-detection" onclick="switchTab('detection')" class="nav-btn px-3 py-1.5 rounded-lg text-emerald-200/70 hover:text-emerald-200">Disease Scanner</button>
+        <button id="nav-planner" onclick="switchTab('planner')" class="nav-btn px-3 py-1.5 rounded-lg text-emerald-200/70 hover:text-emerald-200">Smart Planner</button>
+        <button id="nav-expenses" onclick="switchTab('expenses')" class="nav-btn px-3 py-1.5 rounded-lg text-emerald-200/70 hover:text-emerald-200">Expenses</button>
+        <button id="nav-selling" onclick="switchTab('selling')" class="nav-btn px-3 py-1.5 rounded-lg text-emerald-200/70 hover:text-emerald-200">Direct Selling</button>
+        <button id="nav-schemes" onclick="switchTab('schemes')" class="nav-btn px-3 py-1.5 rounded-lg text-emerald-200/70 hover:text-emerald-200">Schemes</button>
+        <button id="nav-forum" onclick="switchTab('forum')" class="nav-btn px-3 py-1.5 rounded-lg text-emerald-200/70 hover:text-emerald-200">Forum</button>
+        <button id="nav-calendar" onclick="switchTab('calendar')" class="nav-btn px-3 py-1.5 rounded-lg text-emerald-200/70 hover:text-emerald-200">Calendar</button>
+        <button id="nav-alerts" onclick="switchTab('alerts')" class="nav-btn px-3 py-1.5 rounded-lg text-emerald-200/70 hover:text-emerald-200">Alerts</button>
+        <button id="nav-crops" onclick="switchTab('crops')" class="nav-btn px-3 py-1.5 rounded-lg text-emerald-200/70 hover:text-emerald-200">Crops Library</button>
+        <button id="nav-marketplace" onclick="switchTab('marketplace')" class="nav-btn px-3 py-1.5 rounded-lg text-emerald-200/70 hover:text-emerald-200">Marketplace</button>
+      </nav>
+
+      <!-- Right Header Actions -->
+      <div class="flex items-center gap-2">
+        <button onclick="toggleAuthModal()" class="px-4 py-2 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs hover:brightness-110 shadow-md">Login / Signup</button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= MOBILE DRAWER MENU BUTTON ================= -->
+  <div class="lg:hidden sticky top-16 z-30 bg-emerald-950/90 border-b border-emerald-500/20 px-6 py-2 flex items-center justify-between text-xs font-bold">
+    <button onclick="toggleMobileMenu()" class="px-3 py-1.5 rounded bg-emerald-900/40 border border-emerald-500/20 text-emerald-300">
+      ☰ Navigation Menu
+    </button>
+    <span id="active-mobile-tab-label">Home</span>
+  </div>
+
+  <div id="mobile-menu-drawer" class="hidden lg:hidden w-full bg-emerald-950/95 border-b border-emerald-500/20 p-4 space-y-2 text-xs font-bold z-30">
+    <button onclick="switchTab('landing')" class="w-full text-left py-2 px-3 rounded hover:bg-emerald-900/40 block">Home</button>
+    <button onclick="switchTab('dashboard')" class="w-full text-left py-2 px-3 rounded hover:bg-emerald-900/40 block">Dashboard</button>
+    <button onclick="switchTab('detection')" class="w-full text-left py-2 px-3 rounded hover:bg-emerald-900/40 block">Disease Scanner</button>
+    <button onclick="switchTab('planner')" class="w-full text-left py-2 px-3 rounded hover:bg-emerald-900/40 block">Smart Planner</button>
+    <button onclick="switchTab('expenses')" class="w-full text-left py-2 px-3 rounded hover:bg-emerald-900/40 block">Expense Tracker</button>
+    <button onclick="switchTab('selling')" class="w-full text-left py-2 px-3 rounded hover:bg-emerald-900/40 block">Direct Selling</button>
+    <button onclick="switchTab('schemes')" class="w-full text-left py-2 px-3 rounded hover:bg-emerald-900/40 block">Government Schemes</button>
+    <button onclick="switchTab('forum')" class="w-full text-left py-2 px-3 rounded hover:bg-emerald-900/40 block">Community Forum</button>
+    <button onclick="switchTab('calendar')" class="w-full text-left py-2 px-3 rounded hover:bg-emerald-900/40 block">Crop Calendar</button>
+    <button onclick="switchTab('alerts')" class="w-full text-left py-2 px-3 rounded hover:bg-emerald-900/40 block">Alerts & Advisory</button>
+    <button onclick="switchTab('crops')" class="w-full text-left py-2 px-3 rounded hover:bg-emerald-900/40 block">Crops Library</button>
+    <button onclick="switchTab('marketplace')" class="w-full text-left py-2 px-3 rounded hover:bg-emerald-900/40 block">Marketplace</button>
+  </div>
+
+  <!-- ================= MAIN BODY WRAPPER ================= -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 z-10">
+
+    <!-- ================= TAB 1: LANDING PAGE ================= -->
+    <section id="tab-landing" class="tab-page space-y-16 py-4 pb-20">
+      <div class="relative rounded-3xl overflow-hidden glass-panel p-8 sm:p-12 lg:p-16 border border-emerald-500/30 bg-gradient-to-br from-emerald-950/90 via-emerald-900/50 to-teal-950/90 text-center space-y-6">
+        <span class="px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-xs font-bold shadow-lg">🌿 AI-Powered Agriculture platform</span>
+        <h1 class="text-4xl sm:text-6xl font-black text-emerald-100 tracking-tight leading-tight">
+          AI Powered <br class="hidden sm:block" />
+          <span class="bg-gradient-to-r from-emerald-300 via-green-200 to-teal-300 bg-clip-text text-transparent">Smart Farming Assistant</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-emerald-100/80 max-w-xl mx-auto leading-relaxed">
+          Diagnose plant leaf diseases instantly, plan organic treatments, optimize fertilizer costs, check government schemes, and sell yields directly to corporate buyers.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+          <button onclick="switchTab('detection')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-emerald-950 font-black text-xs shadow-md">🔬 Scan Plant Leaf Now</button>
+          <button onclick="toggleChatbot()" class="px-6 py-3 rounded-xl bg-emerald-900/60 border border-emerald-500/40 text-emerald-200 font-bold text-xs">🤖 Talk to AI Advisor</button>
+        </div>
+      </div>
+
+      <!-- Feature highlights -->
+      <div class="space-y-6">
+        <h2 class="text-2xl font-bold text-emerald-100 text-center">Smart Farming Suites</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div onclick="switchTab('planner')" class="glass-card p-5 rounded-3xl space-y-3 cursor-pointer">
+            <span class="text-2xl">🌱</span>
+            <h3 class="text-sm font-bold text-emerald-100">Smart Planner</h3>
+            <p class="text-xs text-emerald-300/70">Analyze NPK levels, get customized crop guides, and calculate irrigation schedule volumes.</p>
+          </div>
+          <div onclick="switchTab('expenses')" class="glass-card p-5 rounded-3xl space-y-3 cursor-pointer">
+            <span class="text-2xl">💵</span>
+            <h3 class="text-sm font-bold text-emerald-100">Expense Analytics</h3>
+            <p class="text-xs text-emerald-300/70">Track seasonal labor, seeds, water, and fertilizers with investment shares charts.</p>
+          </div>
+          <div onclick="switchTab('selling')" class="glass-card p-5 rounded-3xl space-y-3 cursor-pointer">
+            <span class="text-2xl">📈</span>
+            <h3 class="text-sm font-bold text-emerald-100">Direct Yield Selling</h3>
+            <p class="text-xs text-emerald-300/70">Bypass wholesalers! Post crop bids directly to food processing partners.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 2: DASHBOARD ================= -->
+    <section id="tab-dashboard" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="glass-panel p-6 rounded-3xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950 to-teal-950 space-y-2">
+        <h2 class="text-2xl font-extrabold text-emerald-100">Farmer Dashboard Overview</h2>
+        <p class="text-xs text-emerald-300/80">Manage budget limits, crop health scores, weather anomalies, and tasks.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-6">
+        <div onclick="switchTab('expenses')" class="glass-card p-5 rounded-3xl space-y-2 cursor-pointer">
+          <span class="text-[10px] text-emerald-400 font-bold block uppercase">Budget Status</span>
+          <h3 id="dash-budget-spent" class="text-lg font-black text-emerald-100">$2,800.00 Spent</h3>
+          <span class="text-xs text-emerald-300/70">Budget Cap: $5,000.00</span>
+        </div>
+        <div onclick="switchTab('planner')" class="glass-card p-5 rounded-3xl space-y-2 cursor-pointer">
+          <span class="text-[10px] text-emerald-400 font-bold block uppercase">Soil pH Index</span>
+          <h3 id="dash-soil-ph" class="text-lg font-black text-emerald-300">6.2 pH (Slightly Acidic)</h3>
+          <span class="text-xs text-emerald-300/70">Ideal for: Tomato, Wheat</span>
+        </div>
+        <div onclick="switchTab('calendar')" class="glass-card p-5 rounded-3xl space-y-2 cursor-pointer">
+          <span class="text-[10px] text-emerald-400 font-bold block uppercase">Active Tasks</span>
+          <h3 id="dash-tasks" class="text-lg font-black text-emerald-100">3 Pending Reminders</h3>
+          <span class="text-xs text-emerald-300/70">Next: Apply copper fungicide</span>
+        </div>
+        <div onclick="switchTab('alerts')" class="glass-card p-5 rounded-3xl space-y-2 cursor-pointer">
+          <span class="text-[10px] text-rose-400 font-bold block uppercase">Risk Alerts</span>
+          <h3 class="text-lg font-black text-rose-300">2 Warnings Active</h3>
+          <span class="text-xs text-rose-400/80 font-bold">Hailstorm alert tonight</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 3: DISEASE SCANNER ================= -->
+    <section id="tab-detection" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2 max-w-xl mx-auto">
+        <h2 class="text-2xl font-black text-emerald-100">AI Plant Disease Vision Diagnostics</h2>
+        <p class="text-xs text-emerald-300/70">Upload leaf photos, capture live camera snapshots, or test demo plant samples.</p>
+      </div>
+
+      <div class="max-w-3xl mx-auto glass-panel p-8 rounded-3xl border border-emerald-500/30 text-center space-y-6">
+        <div id="scanner-upload-box" class="border-2 border-dashed border-emerald-500/40 p-8 rounded-3xl space-y-4 bg-emerald-950/40 relative overflow-hidden">
+          <div id="laser-fx" class="hidden animate-laser-scan"></div>
+          
+          <!-- State 1: Upload Placeholder -->
+          <div id="scanner-placeholder-view" class="space-y-4 py-8">
+            <div class="text-4xl">🍃</div>
+            <h3 class="text-base font-bold text-emerald-100">Select Plant Leaf Photo</h3>
+            <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <label class="cursor-pointer px-4 py-2 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs shadow-md">
+                Browse Photo
+                <input type="file" accept="image/*" onchange="handleFileSelect(event)" class="hidden" />
+              </label>
+              <button onclick="triggerCameraFeed()" class="px-4 py-2 rounded-xl bg-emerald-900/60 border border-emerald-500/30 text-emerald-200 font-bold text-xs">
+                📸 Take Live Photo
+              </button>
+            </div>
+          </div>
+
+          <!-- State 2: Preview -->
+          <div id="scanner-preview-view" class="hidden space-y-4">
+            <div class="relative max-w-sm mx-auto rounded-2xl overflow-hidden border border-emerald-500/30">
+              <img id="scan-img-preview" src="" alt="Scan Preview" class="w-full h-48 object-cover" />
+              <button onclick="resetScannerImage()" class="absolute top-2 right-2 px-3 py-1.5 rounded-xl bg-black/75 text-emerald-300 text-xs font-bold">Change</button>
+            </div>
+            <button onclick="runAiDiseaseScan()" class="px-5 py-2.5 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs shadow-md">Run AI Diagnostic Scan</button>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-emerald-900/40 space-y-2">
+          <span class="text-[10px] font-bold text-emerald-300 block uppercase">Test Crop Pathology Samples:</span>
+          <div class="flex flex-wrap justify-center gap-2">
+            <button onclick="runAiDiseaseScan('Tomato Late Blight')" class="px-3.5 py-1.5 rounded-xl bg-emerald-900/40 border border-emerald-500/20 text-xs font-bold text-emerald-200">Tomato Late Blight</button>
+            <button onclick="runAiDiseaseScan('Rice Blast Disease')" class="px-3.5 py-1.5 rounded-xl bg-emerald-900/40 border border-emerald-500/20 text-xs font-bold text-emerald-200">Rice Blast</button>
+            <button onclick="runAiDiseaseScan('Wheat Yellow Rust')" class="px-3.5 py-1.5 rounded-xl bg-emerald-900/40 border border-emerald-500/20 text-xs font-bold text-emerald-200">Wheat Stripe Rust</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result card -->
+      <div id="diagnostic-result-card" class="hidden max-w-3xl mx-auto glass-panel p-6 rounded-3xl border border-emerald-500/40 space-y-6">
+        <div class="flex items-center justify-between pb-4 border-b border-emerald-800/40">
+          <div>
+            <span class="text-[10px] font-bold bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30 uppercase">Fungal Pathogen</span>
+            <h3 id="diag-name" class="text-xl font-black text-emerald-100 mt-1">Tomato Late Blight (Phytophthora infestans)</h3>
+          </div>
+          <button onclick="downloadPdfReport()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-emerald-950 font-black text-xs">Download PDF</button>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+          <div class="p-3 rounded-xl bg-emerald-900/40 border border-emerald-500/10">
+            <span class="text-[9px] text-emerald-400 uppercase font-semibold">AI Confidence</span>
+            <span id="res-confidence" class="font-extrabold text-emerald-100 block text-base">96.8%</span>
+          </div>
+          <div class="p-3 rounded-xl bg-emerald-900/40 border border-emerald-500/10">
+            <span class="text-[9px] text-emerald-400 uppercase font-semibold">Severity</span>
+            <span id="res-severity" class="font-extrabold text-amber-400 block text-base">High</span>
+          </div>
+          <div class="p-3 rounded-xl bg-emerald-900/40 border border-emerald-500/10">
+            <span class="text-[9px] text-emerald-400 uppercase font-semibold">Affected Area</span>
+            <span id="res-area" class="font-extrabold text-emerald-100 block text-base">35% of foliage</span>
+          </div>
+          <div class="p-3 rounded-xl bg-emerald-900/40 border border-emerald-500/10">
+            <span class="text-[9px] text-emerald-400 uppercase font-semibold">Crop Health</span>
+            <span id="res-score" class="font-extrabold text-emerald-300 block text-base">62/100</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div id="organic-treatment-panel" class="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-500/20">
+            <h4 class="font-bold text-emerald-300">🌱 Organic Solutions</h4>
+          </div>
+          <div id="chemical-treatment-panel" class="p-4 rounded-2xl bg-emerald-950/60 border border-amber-500/20">
+            <h4 class="font-bold text-amber-300">🧪 Chemical Fungicides</h4>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 4: SMART PLANNER ================= -->
+    <section id="tab-planner" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2 max-w-xl mx-auto">
+        <h2 class="text-2xl font-black text-emerald-100">Smart Planner & Soil Diagnostics</h2>
+        <p class="text-xs text-emerald-300/70">Monitor soil nutrients, get dynamic fertilizer schedules, and target watering requirements.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Form -->
+        <div class="lg:col-span-1 glass-panel p-5 rounded-3xl border border-emerald-500/20 space-y-4">
+          <h3 class="text-sm font-bold text-emerald-100">Soil Metrics Calibration</h3>
+          <div class="space-y-4 text-xs">
+            <div>
+              <label class="text-[10px] font-bold text-emerald-300 block mb-1">Soil pH Level (4.0 - 9.0)</label>
+              <input type="number" id="soil-ph-input" min="4.0" max="9.0" step="0.1" value="6.2" class="w-full px-3 py-2 rounded-xl bg-emerald-950 border border-emerald-500/30 text-emerald-100 focus:outline-none" />
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-emerald-300 block mb-1">Nitrogen (N) Status</label>
+              <select id="soil-n-input" class="w-full px-3 py-2 rounded-xl bg-emerald-950 border border-emerald-500/30 text-emerald-100 focus:outline-none">
+                <option value="low">Low (Deficiency)</option>
+                <option value="medium" selected>Medium (Normal)</option>
+                <option value="high">High (Excess)</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-emerald-300 block mb-1">Soil Type</label>
+              <select id="soil-type-input" class="w-full px-3 py-2 rounded-xl bg-emerald-950 border border-emerald-500/30 text-emerald-100 focus:outline-none">
+                <option value="Sandy">Sandy Soil</option>
+                <option value="Loamy" selected>Loamy Soil</option>
+                <option value="Clayey">Clayey Soil</option>
+              </select>
+            </div>
+            <button onclick="calculateSoilPlanner()" class="w-full py-2.5 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs shadow-md">Calculate Plan</button>
+          </div>
+        </div>
+
+        <!-- Output -->
+        <div class="lg:col-span-2 space-y-6">
+          <div class="glass-panel p-5 rounded-3xl border border-emerald-500/20 space-y-4">
+            <h3 class="text-sm font-bold text-emerald-100">AI Diagnostic Recommendations</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div class="p-4 rounded-xl bg-emerald-900/10 border border-emerald-500/20 space-y-1">
+                <span class="text-xs font-bold text-emerald-300">🌱 Organic Plan:</span>
+                <p id="plan-organic-text" class="text-emerald-100/80 pt-1">Apply compost mulches and cover crop rotation to maintain NPK.</p>
+              </div>
+              <div class="p-4 rounded-xl bg-emerald-900/10 border border-amber-500/20 space-y-1">
+                <span class="text-xs font-bold text-amber-300">🧪 Fertilization Boosters:</span>
+                <p id="plan-chemical-text" class="text-emerald-100/80 pt-1">No major chemical correction needed.</p>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-emerald-950/60 border border-emerald-500/10 text-xs space-y-2">
+              <span class="text-xs font-bold text-emerald-300 block">💧 Custom Irrigation & Water Volumetric Flow</span>
+              <div class="grid grid-cols-2 gap-4 text-xs pt-1">
+                <div>
+                  <span class="text-[9px] text-emerald-400 uppercase font-semibold">Frequency</span>
+                  <span id="plan-irrigation-freq" class="font-extrabold text-emerald-100 block">Every 4 days (Warm weather)</span>
+                </div>
+                <div>
+                  <span class="text-[9px] text-emerald-400 uppercase font-semibold">Daily Volume Rate</span>
+                  <span id="plan-irrigation-vol" class="font-extrabold text-emerald-100 block">3.0 Liters per plant daily</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-emerald-950/60 border border-emerald-500/10 text-xs">
+              <span class="text-xs font-bold text-emerald-300 block mb-2">💡 Top Suited Crops for Soil pH</span>
+              <div id="plan-crop-recs" class="flex flex-wrap gap-2">
+                <span class="px-2.5 py-1 rounded-full bg-emerald-900/40 border border-emerald-500/30 text-emerald-300 font-bold">Tomato</span>
+                <span class="px-2.5 py-1 rounded-full bg-emerald-900/40 border border-emerald-500/30 text-emerald-300 font-bold">Wheat</span>
+                <span class="px-2.5 py-1 rounded-full bg-emerald-900/40 border border-emerald-500/30 text-emerald-300 font-bold">Rice</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 5: EXPENSE TRACKER ================= -->
+    <section id="tab-expenses" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2 max-w-xl mx-auto">
+        <h2 class="text-2xl font-black text-emerald-100">Farm Expense Tracker & Budgeting</h2>
+        <p class="text-xs text-emerald-300/70">Register crop investments, log purchases, and check category distributions.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-1 space-y-6">
+          <div class="glass-panel p-5 rounded-3xl border border-emerald-500/20 space-y-4">
+            <h3 class="text-sm font-bold text-emerald-100">Log Transaction</h3>
+            <form onsubmit="event.preventDefault(); addExpenseEntry();" class="space-y-3.5 text-xs">
+              <div>
+                <label class="text-[10px] font-bold text-emerald-300 block mb-1">Notes / Item Name</label>
+                <input type="text" id="exp-name" required placeholder="e.g. Hybrid Tomato seeds" class="w-full px-3 py-2 rounded-xl bg-emerald-950 border border-emerald-500/30 text-emerald-100 focus:outline-none" />
+              </div>
+              <div>
+                <label class="text-[10px] font-bold text-emerald-300 block mb-1">Category</label>
+                <select id="exp-category" class="w-full px-3 py-2 rounded-xl bg-emerald-950 border border-emerald-500/30 text-emerald-100 focus:outline-none">
+                  <option value="Seeds">Seeds</option>
+                  <option value="Fertilizers">Fertilizers</option>
+                  <option value="Labor">Labor</option>
+                  <option value="Pesticides">Pesticides</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-[10px] font-bold text-emerald-300 block mb-1">Amount ($)</label>
+                <input type="number" id="exp-amount" required placeholder="0.00" class="w-full px-3 py-2 rounded-xl bg-emerald-950 border border-emerald-500/30 text-emerald-100 focus:outline-none" />
+              </div>
+              <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs shadow-md">Add Transaction</button>
+            </form>
+          </div>
+
+          <!-- Charts -->
+          <div class="glass-panel p-5 rounded-3xl border border-emerald-500/20 space-y-4">
+            <h3 class="text-sm font-bold text-emerald-100">Category breakdown</h3>
+            <div id="expense-shares-container" class="space-y-2.5 text-xs">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Ledger -->
+        <div class="lg:col-span-2">
+          <div class="glass-panel p-6 rounded-3xl border border-emerald-500/20 space-y-4 min-h-[400px] flex flex-col justify-between">
+            <div class="flex items-center justify-between border-b border-emerald-900/40 pb-3">
+              <h3 class="text-sm font-bold text-emerald-100">Transaction Ledger</h3>
+              <span id="ledger-total" class="text-xs font-bold text-emerald-300">$2,800 spent</span>
+            </div>
+            
+            <div id="expense-ledger-list" class="flex-1 overflow-y-auto space-y-2 pr-1 max-h-[350px]">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 6: DIRECT SELLING ================= -->
+    <section id="tab-selling" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2 max-w-xl mx-auto">
+        <h2 class="text-2xl font-black text-emerald-100">Direct Crop Selling Portal</h2>
+        <p class="text-xs text-emerald-300/70">List your harvest lots and accept bids directly from regional wholesaling networks.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-1 glass-panel p-5 rounded-3xl border border-emerald-500/20 space-y-4">
+          <h3 class="text-sm font-bold text-emerald-100">Post Harvest Lot</h3>
+          <form onsubmit="event.preventDefault(); createCropListing();" class="space-y-3.5 text-xs">
+            <div>
+              <label class="text-[10px] font-bold text-emerald-300 block mb-1">Crop lot name</label>
+              <input type="text" id="sell-crop-name" required placeholder="e.g. Tomato (Roma Hybrid)" class="w-full px-3 py-2 rounded-xl bg-emerald-950 border border-emerald-500/30 text-emerald-100 focus:outline-none" />
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-emerald-300 block mb-1">Tonnage Quantity (Tons)</label>
+              <input type="number" id="sell-quantity" required placeholder="e.g. 5" class="w-full px-3 py-2 rounded-xl bg-emerald-950 border border-emerald-500/30 text-emerald-100 focus:outline-none" />
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-emerald-300 block mb-1">Target Price per Ton ($)</label>
+              <input type="number" id="sell-price" required placeholder="e.g. 420" class="w-full px-3 py-2 rounded-xl bg-emerald-950 border border-emerald-500/30 text-emerald-100 focus:outline-none" />
+            </div>
+            <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs shadow-md">Post Listing</button>
+          </form>
+        </div>
+
+        <div class="lg:col-span-2">
+          <div class="glass-panel p-6 rounded-3xl border border-emerald-500/20 space-y-4 min-h-[400px]">
+            <h3 class="text-sm font-bold text-emerald-100">My Listings & Buyer Bids</h3>
+            <div id="crop-selling-listings" class="space-y-4">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 7: GOVERNMENT SCHEMES ================= -->
+    <section id="tab-schemes" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2 max-w-xl mx-auto">
+        <h2 class="text-2xl font-black text-emerald-100">Government Schemes & Subsidies</h2>
+        <p class="text-xs text-emerald-300/70">Explore active subsidy benefits, tractor loans, and solar pump programs.</p>
+      </div>
+
+      <div class="max-w-4xl mx-auto space-y-4">
+        <div class="flex items-center gap-3 bg-emerald-950/40 p-4 rounded-2xl border border-emerald-500/20">
+          <input type="text" id="scheme-search-input" oninput="filterSchemesList()" placeholder="Search active schemes by name..." class="flex-1 bg-emerald-950 border border-emerald-500/30 rounded-xl px-4 py-2 text-xs text-emerald-100 focus:outline-none" />
+        </div>
+
+        <div id="schemes-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 8: COMMUNITY FORUM ================= -->
+    <section id="tab-forum" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2 max-w-xl mx-auto">
+        <h2 class="text-2xl font-black text-emerald-100">Farmer Community Forum</h2>
+        <p class="text-xs text-emerald-300/70">Consult with certified pathologists and share agronomy findings with colleagues.</p>
+      </div>
+
+      <div class="max-w-3xl mx-auto space-y-6">
+        <div class="glass-panel p-5 rounded-3xl border border-emerald-500/20">
+          <h3 class="text-sm font-bold text-emerald-100 mb-3">Ask the Community</h3>
+          <form onsubmit="event.preventDefault(); postForumQuestion();" class="space-y-3.5 text-xs">
+            <input type="text" id="forum-q-title" required placeholder="Question Title (e.g. How to manage whitefly infestation?)" class="w-full px-3 py-2 rounded-xl bg-emerald-950 border border-emerald-500/30 text-emerald-100 focus:outline-none" />
+            <textarea id="forum-q-desc" required rows="3" placeholder="Provide extra details..." class="w-full px-3 py-2 rounded-xl bg-emerald-950 border border-emerald-500/30 text-emerald-100 focus:outline-none"></textarea>
+            <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs shadow-md">Post Question</button>
+          </form>
+        </div>
+
+        <div id="forum-threads" class="space-y-4">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 9: CROP CALENDAR ================= -->
+    <section id="tab-calendar" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2 max-w-xl mx-auto">
+        <h2 class="text-2xl font-black text-emerald-100">Crop Calendar & Reminders</h2>
+        <p class="text-xs text-emerald-300/70">Schedule and checklist seasonal waterings, fertilization schedules, and harvests.</p>
+      </div>
+
+      <div class="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass-panel p-5 rounded-3xl border border-emerald-500/20 text-xs space-y-4">
+          <h3 class="text-sm font-bold text-emerald-100">Schedule Task</h3>
+          <form onsubmit="event.preventDefault(); addCalendarTask();" class="space-y-3 text-xs">
+            <input type="text" id="cal-title" required placeholder="Task title" class="w-full px-3 py-2 rounded-xl bg-emerald-950 border border-emerald-500/30 text-emerald-100 focus:outline-none" />
+            <input type="date" id="cal-date" required class="w-full px-3 py-2 rounded-xl bg-emerald-950 border border-emerald-500/30 text-emerald-100 focus:outline-none" />
+            <select id="cal-priority" class="w-full px-3 py-2 rounded-xl bg-emerald-950 border border-emerald-500/30 text-emerald-100 focus:outline-none">
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+            <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs shadow-md">Add Task</button>
+          </form>
+        </div>
+
+        <div class="md:col-span-2 glass-panel p-5 rounded-3xl border border-emerald-500/20">
+          <h3 class="text-sm font-bold text-emerald-100 mb-3">Farm Chore Checklist</h3>
+          <div id="calendar-checklist" class="space-y-2 text-xs">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 10: ALERTS ================= -->
+    <section id="tab-alerts" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2 max-w-xl mx-auto">
+        <h2 class="text-2xl font-black text-emerald-100">Weather Risks & Pest Alerts</h2>
+        <p class="text-xs text-emerald-300/70">Receive immediate notifications on extreme advisories.</p>
+      </div>
+
+      <div id="alerts-list" class="max-w-2xl mx-auto space-y-4">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- ================= TAB 11: CROPS LIBRARY ================= -->
+    <section id="tab-crops" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2 max-w-xl mx-auto">
+        <h2 class="text-2xl font-black text-emerald-100">Crop Library</h2>
+        <p class="text-xs text-emerald-300/70">Access agronomic guidelines, water thresholds, and expected market value forecasts.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1592417817098-8f3d6eb19657?w=500&q=80" alt="Tomato" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-base font-bold text-emerald-100">Tomato Lot</h3>
+          <p class="text-xs text-emerald-300/80">Ideal pH: 6.0 - 6.8 | Climate: 18°C - 28°C</p>
+          <span class="text-sm font-black text-emerald-300 block">$420 / Ton</span>
+        </div>
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=500&q=80" alt="Wheat" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-base font-bold text-emerald-100">Wheat Lot</h3>
+          <p class="text-xs text-emerald-300/80">Ideal pH: 6.0 - 7.5 | Climate: 10°C - 25°C</p>
+          <span class="text-sm font-black text-emerald-300 block">$290 / Ton</span>
+        </div>
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1536657464919-892534f60d6e?w=500&q=80" alt="Rice" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-base font-bold text-emerald-100">Rice (Paddy)</h3>
+          <p class="text-xs text-emerald-300/80">Ideal pH: 5.5 - 6.5 | Climate: 20°C - 35°C</p>
+          <span class="text-sm font-black text-emerald-300 block">$380 / Ton</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 12: MARKETPLACE ================= -->
+    <section id="tab-marketplace" class="tab-page hidden space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2 max-w-xl mx-auto">
+        <h2 class="text-2xl font-black text-emerald-100">Vendor Marketplace</h2>
+        <p class="text-xs text-emerald-300/70">Order premium bio-fungicides and fertilizers straight to your coordinates.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&q=80" alt="Copper fungicide" class="w-full h-36 object-cover rounded-xl" />
+          <h3 class="text-xs font-bold text-emerald-100">AgroShield Copper Bio-Fungicide (1L)</h3>
+          <span class="text-xs font-extrabold text-emerald-300 block">$24.99</span>
+          <button onclick="triggerConfetti('Item added to cart!')" class="w-full py-2 bg-emerald-500 text-emerald-950 font-bold text-xs rounded-xl">Add to Cart</button>
+        </div>
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1585314062340-f1a5a7c9328d?w=500&q=80" alt="Liquid nitrogen" class="w-full h-36 object-cover rounded-xl" />
+          <h3 class="text-xs font-bold text-emerald-100">Nano Nitrogen Foliar Spray (500ml)</h3>
+          <span class="text-xs font-extrabold text-emerald-300 block">$18.50</span>
+          <button onclick="triggerConfetti('Item added to cart!')" class="w-full py-2 bg-emerald-500 text-emerald-950 font-bold text-xs rounded-xl">Add to Cart</button>
+        </div>
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1617576683096-00fc8eecb3af?w=500&q=80" alt="Neem oil" class="w-full h-36 object-cover rounded-xl" />
+          <h3 class="text-xs font-bold text-emerald-100">NeemMax Cold Pressed Bio-Insecticide</h3>
+          <span class="text-xs font-extrabold text-emerald-300 block">$29.99</span>
+          <button onclick="triggerConfetti('Item added to cart!')" class="w-full py-2 bg-emerald-500 text-emerald-950 font-bold text-xs rounded-xl">Add to Cart</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="glass-panel border-t border-emerald-500/20 py-8 px-6 text-center text-xs text-emerald-300/60 mt-20">
+    <span>© 2026 AgroGen AI Technologies. All rights reserved.</span>
+  </footer>
+
+  <!-- ================= FLOATING AI CHATBOT ================= -->
+  <div class="fixed bottom-6 right-6 z-50">
+    <div id="chatbot-box" class="hidden w-80 sm:w-96 h-[480px] glass-panel rounded-3xl border border-emerald-500/40 p-4 flex flex-col justify-between shadow-2xl bg-emerald-950/95 backdrop-blur-xl">
+      <div class="flex items-center justify-between pb-3 border-b border-emerald-800/40">
+        <div class="flex items-center gap-2">
+          <span>🤖</span>
+          <span class="text-xs font-bold text-emerald-100">AgroGen AI Assistant</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <select id="chat-lang" class="bg-emerald-900/60 border border-emerald-500/30 text-emerald-200 text-[10px] rounded px-1.5 py-0.5">
+            <option value="English">English</option>
+            <option value="Hindi">Hindi (हिंदी)</option>
+            <option value="Punjabi">Punjabi (ਪੰਜਾਬੀ)</option>
+            <option value="Spanish">Spanish</option>
+          </select>
+          <button onclick="toggleChatbot()" class="text-emerald-300 hover:text-rose-400 font-bold text-xs">✕</button>
+        </div>
+      </div>
+
+      <div id="chat-messages" class="flex-1 overflow-y-auto space-y-3 py-3 pr-1 text-xs">
+        <div class="p-3 rounded-2xl bg-emerald-900/60 border border-emerald-500/20 text-emerald-100 max-w-[85%]">
+          Welcome to AgroGen AI. Choose your dialect and input queries regarding crop diseases, irrigation volumes, or NPK guidelines!
+        </div>
+      </div>
+
+      <div class="pt-2 border-t border-emerald-800/40 flex items-center gap-2">
+        <input type="text" id="chat-input-text" placeholder="Ask advisor..." onkeydown="if(event.key==='Enter') sendChatMessage()" class="flex-1 bg-emerald-950 border border-emerald-500/30 rounded-xl px-3 py-2 text-xs text-emerald-100 focus:outline-none" />
+        <button onclick="sendChatMessage()" class="px-4 py-2 bg-emerald-500 text-emerald-950 font-bold text-xs rounded-xl shadow">Send</button>
+      </div>
+    </div>
+
+    <button onclick="toggleChatbot()" class="p-4 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-400 text-emerald-950 font-black shadow-2xl hover:scale-105 transition-transform">
+      🤖 AI Advisor
+    </button>
+  </div>
+
+  <!-- ================= LIVE CAMERA SNAPSHOT MODAL ================= -->
+  <div id="camera-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+    <div class="w-full max-w-md glass-panel rounded-3xl border border-emerald-500/40 p-6 space-y-4 text-center relative">
+      <h3 class="text-sm font-bold text-emerald-100">Live Camera Leaf Capture</h3>
+      <div class="relative rounded-2xl overflow-hidden border border-emerald-500/30 bg-black">
+        <video id="camera-video" autoplay playsinline class="w-full h-48 object-cover"></video>
+      </div>
+      <div class="flex gap-3">
+        <button onclick="stopCameraFeed()" class="flex-1 py-2 rounded-xl bg-emerald-900/60 text-emerald-300 text-xs font-bold">Cancel</button>
+        <button onclick="captureCameraSnapshot()" class="flex-1 py-2 rounded-xl bg-emerald-500 text-emerald-950 text-xs font-black shadow-lg">Capture</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= AUTH MODAL ================= -->
+  <div id="auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="w-full max-w-sm glass-panel rounded-3xl border border-emerald-500/30 p-6 space-y-5 relative text-center">
+      <button onclick="toggleAuthModal()" class="absolute top-5 right-5 text-emerald-300 hover:text-rose-400 font-bold">✕</button>
+      <h3 class="text-xl font-bold text-emerald-100">Login to AgroGen</h3>
+      <form onsubmit="event.preventDefault(); toggleAuthModal(); triggerConfetti('Successfully logged in!');" class="space-y-3.5 text-xs text-left">
+        <div>
+          <label class="text-emerald-300 block mb-1">Email</label>
+          <input type="email" required placeholder="farmer@agrogen.ai" class="w-full px-3 py-2 rounded-xl bg-emerald-900/30 border border-emerald-500/30 text-emerald-100 focus:outline-none" />
+        </div>
+        <div>
+          <label class="text-emerald-300 block mb-1">Password</label>
+          <input type="password" required placeholder="••••••••" class="w-full px-3 py-2 rounded-xl bg-emerald-900/30 border border-emerald-500/30 text-emerald-100 focus:outline-none" />
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-500 text-emerald-950 font-black shadow">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT ================= -->
+  <script>
+    // Tab Switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-page').forEach(el => el.classList.add('hidden'));
+      const target = document.getElementById('tab-' + tabId);
+      if (target) {
+        target.classList.remove('hidden');
+      }
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.className = "nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40";
+      });
+      const activeNav = document.getElementById('nav-' + tabId);
+      if (activeNav) {
+        activeNav.className = "nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm";
+      }
+
+      const mobileLabel = document.getElementById('active-mobile-tab-label');
+      if (mobileLabel) {
+        mobileLabel.innerText = tabId.charAt(0).toUpperCase() + tabId.slice(1);
+      }
+
+      document.getElementById('mobile-menu-drawer').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleMobileMenu() {
+      document.getElementById('mobile-menu-drawer').classList.toggle('hidden');
+    }
+
+    function toggleChatbot() {
+      document.getElementById('chatbot-box').classList.toggle('hidden');
+    }
+
+    function toggleAuthModal() {
+      document.getElementById('auth-modal').classList.toggle('hidden');
+    }
+
+    function triggerConfetti(msg) {
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 60, spread: 50 });
+      }
+      if (msg) alert(msg);
+    }
+
+    // --- Core Datasets ---
+    const mockDiseases = {
+      'Tomato Late Blight': {
+        name: 'Tomato Late Blight (Phytophthora infestans)',
+        category: 'Fungal Pathogen',
+        confidence: '96.8%',
+        severity: 'High',
+        area: '35% of foliage',
+        score: '62/100',
+        organic: ['Apply Copper Octanoate / Liquid Copper Fungicide spray twice weekly.', 'Spray Neem Oil (0.5% concentration) combined with potassium bicarbonate.'],
+        chemical: ['Apply Chlorothalonil or Mancozeb preventative sprays.', 'Use systemic fungicides such as Cymoxanil or Dimethomorph.']
+      },
+      'Rice Blast Disease': {
+        name: 'Rice Blast Disease (Magnaporthe oryzae)',
+        category: 'Fungal Pathogen',
+        confidence: '94.2%',
+        severity: 'Critical',
+        area: '48% of leaf blade',
+        score: '48/100',
+        organic: ['Apply Pseudomonas fluorescens bio-agent at 10g/L spray.', 'Foliar spray of 5% raw cow milk extract in early morning.'],
+        chemical: ['Foliar spray with Tricyclazole 75% WP at 0.6g/L.', 'Isoprothiolane 40% EC application.']
+      },
+      'Wheat Yellow Rust': {
+        name: 'Wheat Stripe / Yellow Rust (Puccinia striiformis)',
+        category: 'Fungal Pathogen',
+        confidence: '97.5%',
+        severity: 'High',
+        area: '40% of leaf blades',
+        score: '55/100',
+        organic: ['Dust fine agricultural sulfur powder at 25kg/ha.', 'Garlic & chilli extract bio-spray.'],
+        chemical: ['Spray Propiconazole 25% EC at 1ml per liter of water.', 'Tebuconazole 25.9% EC application.']
+      }
+    };
+
+    // --- Module 1: Disease Scanner ---
+    function runAiDiseaseScan(diseaseName) {
+      if (!diseaseName) {
+        const keys = Object.keys(mockDiseases);
+        diseaseName = keys[Math.floor(Math.random() * keys.length)];
+      }
+
+      const previewImg = document.getElementById('scan-img-preview');
+      if (!previewImg.src || previewImg.src.endsWith('index.html')) {
+        previewImg.src = 'https://images.unsplash.com/photo-1592417817098-8f3d6eb19657?w=600&q=80';
+        document.getElementById('scanner-placeholder-view').classList.add('hidden');
+        document.getElementById('scanner-preview-view').classList.remove('hidden');
+      }
+
+      const laser = document.getElementById('laser-fx');
+      laser.classList.remove('hidden');
+      document.getElementById('diagnostic-result-card').classList.add('hidden');
+
+      setTimeout(() => {
+        laser.classList.add('hidden');
+        const data = mockDiseases[diseaseName] || mockDiseases['Tomato Late Blight'];
+        
+        document.getElementById('diag-name').innerText = data.name;
+        document.getElementById('res-confidence').innerText = data.confidence;
+        document.getElementById('res-severity').innerText = data.severity;
+        document.getElementById('res-area').innerText = data.area;
+        document.getElementById('res-score').innerText = data.score;
+
+        document.getElementById('organic-treatment-panel').innerHTML = `<h4 class="font-bold text-emerald-300">🌱 Organic Solutions</h4>` + 
+          data.organic.map(item => `<p class="text-emerald-100/80 mt-1">• ${item}</p>`).join('');
+
+        document.getElementById('chemical-treatment-panel').innerHTML = `<h4 class="font-bold text-amber-300">🧪 Chemical Fungicides</h4>` + 
+          data.chemical.map(item => `<p class="text-emerald-100/80 mt-1">• ${item}</p>`).join('');
+
+        document.getElementById('diagnostic-result-card').classList.remove('hidden');
+        triggerConfetti();
+        window.scrollTo({ top: 600, behavior: 'smooth' });
+      }, 1500);
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('scan-img-preview').src = e.target.result;
+          document.getElementById('scanner-placeholder-view').classList.add('hidden');
+          document.getElementById('scanner-preview-view').classList.remove('hidden');
+          document.getElementById('diagnostic-result-card').classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function resetScannerImage() {
+      document.getElementById('scan-img-preview').src = '';
+      document.getElementById('scanner-preview-view').classList.add('hidden');
+      document.getElementById('scanner-placeholder-view').classList.remove('hidden');
+      document.getElementById('diagnostic-result-card').classList.add('hidden');
+    }
+
+    // Camera Handlers
+    let cameraStream = null;
+    async function triggerCameraFeed() {
+      const modal = document.getElementById('camera-modal');
+      const video = document.getElementById('camera-video');
+      modal.classList.remove('hidden');
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        video.srcObject = cameraStream;
+      } catch (err) {
+        alert('Camera not accessible. Please upload leaf photo.');
+        modal.classList.add('hidden');
+      }
+    }
+
+    function stopCameraFeed() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(t => t.stop());
+        cameraStream = null;
+      }
+      document.getElementById('camera-modal').classList.add('hidden');
+    }
+
+    function captureCameraSnapshot() {
+      const video = document.getElementById('camera-video');
+      if (video && cameraStream) {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 480;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        document.getElementById('scan-img-preview').src = canvas.toDataURL('image/jpeg');
+        document.getElementById('scanner-placeholder-view').classList.add('hidden');
+        document.getElementById('scanner-preview-view').classList.remove('hidden');
+        stopCameraFeed();
+      }
+    }
+
+    function downloadPdfReport() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const name = document.getElementById('diag-name').innerText;
+      doc.setFillColor(9, 16, 12);
+      doc.rect(0, 0, 210, 30, 'F');
+      doc.setTextColor(34, 197, 94);
+      doc.setFontSize(18);
+      doc.text('AgroGen Smart Diagnostic Report', 14, 20);
+      doc.setTextColor(50, 50, 50);
+      doc.setFontSize(11);
+      doc.text(`Disease: ${name}`, 14, 45);
+      doc.text(`AI Match Accuracy: ${document.getElementById('res-confidence').innerText}`, 14, 55);
+      doc.text(`Severity Status: ${document.getElementById('res-severity').innerText}`, 14, 65);
+      doc.save('AgroGen_Report.pdf');
+    }
+
+    // --- Module 2: Smart Planner ---
+    function calculateSoilPlanner() {
+      const ph = parseFloat(document.getElementById('soil-ph-input').value);
+      const n = document.getElementById('soil-n-input').value;
+      const type = document.getElementById('soil-type-input').value;
+
+      let organic = "Apply balanced vermicompost and cow manure lining.";
+      let chemical = "No correction needed.";
+      let freq = "Every 4 days";
+      let vol = "3.0 Liters daily";
+
+      if (n === 'low') {
+        organic = "Apply poultry manure or blood meal to raise nitrogen.";
+        chemical = "Apply Urea (46-0-0) at 35kg/acre.";
+      }
+      if (type === 'Sandy') {
+        freq = "Every 2 days";
+        vol = "2.5 Liters daily";
+      } else if (type === 'Clayey') {
+        freq = "Every 6 days";
+        vol = "4.0 Liters daily";
+      }
+
+      document.getElementById('plan-organic-text').innerText = organic;
+      document.getElementById('plan-chemical-text').innerText = chemical;
+      document.getElementById('plan-irrigation-freq').innerText = freq;
+      document.getElementById('plan-irrigation-vol').innerText = vol;
+
+      const cropsContainer = document.getElementById('plan-crop-recs');
+      if (ph < 5.8) {
+        cropsContainer.innerHTML = `<span class="px-2.5 py-1 rounded-full bg-emerald-900/40 border border-emerald-500/30 text-emerald-300 font-bold">Potatoes</span>
+                                    <span class="px-2.5 py-1 rounded-full bg-emerald-900/40 border border-emerald-500/30 text-emerald-300 font-bold">Sweet Potatoes</span>`;
+      } else {
+        cropsContainer.innerHTML = `<span class="px-2.5 py-1 rounded-full bg-emerald-900/40 border border-emerald-500/30 text-emerald-300 font-bold">Tomato</span>
+                                    <span class="px-2.5 py-1 rounded-full bg-emerald-900/40 border border-emerald-500/30 text-emerald-300 font-bold">Wheat</span>
+                                    <span class="px-2.5 py-1 rounded-full bg-emerald-900/40 border border-emerald-500/30 text-emerald-300 font-bold">Rice</span>`;
+      }
+      triggerConfetti();
+    }
+
+    // --- Module 3: Expense Tracker ---
+    let expenses = [
+      { id: 1, name: 'Hybrid Tomato seeds', category: 'Seeds', amount: 450 },
+      { id: 2, name: 'Bio-NPK Fertilizer boost', category: 'Fertilizers', amount: 800 },
+      { id: 3, name: 'Drip water pipes replacement', category: 'Other', amount: 350 },
+      { id: 4, name: 'Harvest labor crew pay', category: 'Labor', amount: 1200 }
+    ];
+
+    function renderExpenses() {
+      const list = document.getElementById('expense-ledger-list');
+      const shares = document.getElementById('expense-shares-container');
+      const totalLabel = document.getElementById('ledger-total');
+      
+      let total = 0;
+      const sums = { Seeds: 0, Fertilizers: 0, Labor: 0, Pesticides: 0, Other: 0 };
+      
+      list.innerHTML = '';
+      expenses.forEach(exp => {
+        total += exp.amount;
+        sums[exp.category] = (sums[exp.category] || 0) + exp.amount;
+
+        list.innerHTML += `<div class="p-3 rounded-2xl bg-emerald-900/10 border border-emerald-500/10 flex items-center justify-between">
+          <div>
+            <span class="font-bold text-emerald-100 block">${exp.name}</span>
+            <span class="text-[9px] text-emerald-400 uppercase">${exp.category}</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="font-black text-emerald-300">-$${exp.amount}</span>
+            <button onclick="deleteExpenseEntry(${exp.id})" class="text-rose-400 hover:text-rose-300">✕</button>
+          </div>
+        </div>`;
+      });
+
+      totalLabel.innerText = `Total Spent: $${total}`;
+      document.getElementById('dash-budget-spent').innerText = `$${total} Spent`;
+
+      shares.innerHTML = '';
+      Object.keys(sums).forEach(cat => {
+        const amt = sums[cat];
+        const percent = total > 0 ? (amt / total) * 100 : 0;
+        if (amt === 0) return;
+        shares.innerHTML += `<div>
+          <div class="flex justify-between text-[10px] mb-0.5">
+            <span>${cat}</span>
+            <span>$${amt} (${percent.toFixed(0)}%)</span>
+          </div>
+          <div class="w-full h-1.5 bg-emerald-950 rounded-full overflow-hidden">
+            <div class="h-full bg-emerald-500" style="width: ${percent}%"></div>
+          </div>
+        </div>`;
+      });
+    }
+
+    function addExpenseEntry() {
+      const name = document.getElementById('exp-name').value;
+      const category = document.getElementById('exp-category').value;
+      const amount = parseFloat(document.getElementById('exp-amount').value);
+
+      expenses.unshift({ id: Date.now(), name, category, amount });
+      document.getElementById('exp-name').value = '';
+      document.getElementById('exp-amount').value = '';
+      renderExpenses();
+    }
+
+    function deleteExpenseEntry(id) {
+      expenses = expenses.filter(e => e.id !== id);
+      renderExpenses();
+    }
+
+    // --- Module 4: Direct Selling ---
+    let cropListings = [
+      {
+        id: 1,
+        crop: 'Tomato (Roma Hybrid)',
+        qty: '5 Tons',
+        price: '$420 / Ton',
+        bids: [
+          { id: '1a', buyer: 'Metro Cash & Carry', amount: '$410 / Ton', status: 'Pending' },
+          { id: '1b', buyer: 'Reliance Retail', amount: '$395 / Ton', status: 'Pending' }
+        ]
+      }
+    ];
+
+    function renderCropListings() {
+      const container = document.getElementById('crop-selling-listings');
+      container.innerHTML = '';
+
+      cropListings.forEach(list => {
+        let bidsHtml = '';
+        list.bids.forEach(bid => {
+          bidsHtml += `<div class="p-2 rounded-xl bg-emerald-950/60 border border-emerald-500/10 flex items-center justify-between text-xs mt-2">
+            <div>
+              <span class="font-bold text-emerald-100">${bid.buyer}</span>
+              <span class="text-[10px] text-emerald-300 block">Bid: ${bid.amount}</span>
+            </div>
+            ${bid.status === 'Pending' ? `<div class="flex gap-2">
+              <button onclick="acceptCropBid(${list.id}, '${bid.id}', '${bid.buyer}', '${bid.amount}')" class="px-2.5 py-1 rounded bg-emerald-500 text-emerald-950 font-black">Accept</button>
+            </div>` : `<span class="text-emerald-400 font-bold">${bid.status}</span>`}
+          </div>`;
+        });
+
+        container.innerHTML += `<div class="p-4 rounded-2xl bg-emerald-900/10 border border-emerald-500/20">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-emerald-100 text-sm">${list.crop}</span>
+            <span class="text-xs text-emerald-400 font-black">${list.qty} lot</span>
+          </div>
+          <span class="text-xs text-emerald-300/80 block mt-1">Expected Price: ${list.price}</span>
+          <div class="mt-3">
+            <span class="text-[10px] font-bold text-emerald-300 uppercase block">Buyer Bids:</span>
+            ${bidsHtml || '<p class="text-[10px] text-emerald-300/40 italic mt-1">No bids received yet.</p>'}
+          </div>
+        </div>`;
+      });
+    }
+
+    function createCropListing() {
+      const name = document.getElementById('sell-crop-name').value;
+      const qty = document.getElementById('sell-quantity').value;
+      const price = document.getElementById('sell-price').value;
+
+      cropListings.unshift({
+        id: Date.now(),
+        crop: name,
+        qty: `${qty} Tons`,
+        price: `$${price} / Ton`,
+        bids: []
+      });
+
+      document.getElementById('sell-crop-name').value = '';
+      document.getElementById('sell-quantity').value = '';
+      document.getElementById('sell-price').value = '';
+      renderCropListings();
+      triggerConfetti();
+    }
+
+    function acceptCropBid(listId, bidId, buyer, amount) {
+      cropListings = cropListings.map(list => {
+        if (list.id === listId) {
+          return {
+            ...list,
+            price: amount,
+            bids: list.bids.map(b => b.id === bidId ? { ...b, status: 'Accepted' } : { ...b, status: 'Declined' })
+          };
+        }
+        return list;
+      });
+      renderCropListings();
+      triggerConfetti('Bid accepted! Sales contract signed.');
+    }
+
+    // --- Module 5: Government Schemes ---
+    const schemesData = [
+      { id: 1, title: 'PM Kisan Samman Nidhi Yojana', desc: 'Direct benefit transfer income support of $75 per year in three installments.' },
+      { id: 2, title: 'Solar Water Pump Subsidy (PM-KUSUM)', desc: 'Up to 60% central and state subsidy on grid-independent solar water pumps.' },
+      { id: 3, title: 'Tractor Mechanization Subsidy', desc: 'Get 40-50% financial assistance for agricultural tractors and rotavators.' }
+    ];
+
+    function renderSchemes() {
+      const container = document.getElementById('schemes-grid');
+      container.innerHTML = '';
+      schemesData.forEach(sch => {
+        container.innerHTML += `<div class="glass-panel p-5 rounded-2xl border border-emerald-500/20 space-y-3">
+          <h3 class="font-bold text-emerald-100">${sch.title}</h3>
+          <p class="text-xs text-emerald-100/70 leading-relaxed">${sch.desc}</p>
+          <button onclick="triggerConfetti('Application submitted successfully!')" class="px-4 py-2 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs shadow-md">Apply Online</button>
+        </div>`;
+      });
+    }
+
+    function filterSchemesList() {
+      const q = document.getElementById('scheme-search-input').value.toLowerCase();
+      const container = document.getElementById('schemes-grid');
+      container.innerHTML = '';
+      schemesData.forEach(sch => {
+        if (sch.title.toLowerCase().includes(q) || sch.desc.toLowerCase().includes(q)) {
+          container.innerHTML += `<div class="glass-panel p-5 rounded-2xl border border-emerald-500/20 space-y-3">
+            <h3 class="font-bold text-emerald-100">${sch.title}</h3>
+            <p class="text-xs text-emerald-100/70 leading-relaxed">${sch.desc}</p>
+            <button onclick="triggerConfetti('Application submitted successfully!')" class="px-4 py-2 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs shadow-md">Apply Online</button>
+          </div>`;
+        }
+      });
+    }
+
+    // --- Module 6: Forum ---
+    let threads = [
+      { id: 1, title: 'Organic Neem oil dosage for cotton pests', desc: 'Using cold pressed neem oil. Spray early morning.', upvotes: 12 }
+    ];
+
+    function renderForum() {
+      const container = document.getElementById('forum-threads');
+      container.innerHTML = '';
+      threads.forEach(t => {
+        container.innerHTML += `<div class="p-4 rounded-2xl bg-emerald-900/10 border border-emerald-500/20 flex justify-between items-center">
+          <div>
+            <h4 class="font-bold text-emerald-100 text-xs">${t.title}</h4>
+            <p class="text-[10px] text-emerald-300/75 mt-0.5">${t.desc}</p>
+          </div>
+          <button onclick="upvoteThread(${t.id})" class="px-3 py-1 bg-emerald-950 border border-emerald-500/20 text-emerald-400 hover:text-emerald-300 font-bold rounded-lg text-xs">👍 ${t.upvotes}</button>
+        </div>`;
+      });
+    }
+
+    function postForumQuestion() {
+      const title = document.getElementById('forum-q-title').value;
+      const desc = document.getElementById('forum-q-desc').value;
+
+      threads.unshift({ id: Date.now(), title, desc, upvotes: 0 });
+      document.getElementById('forum-q-title').value = '';
+      document.getElementById('forum-q-desc').value = '';
+      renderForum();
+    }
+
+    function upvoteThread(id) {
+      threads = threads.map(t => t.id === id ? { ...t, upvotes: t.upvotes + 1 } : t);
+      renderForum();
+    }
+
+    // --- Module 7: Calendar Tasks Checklist ---
+    let tasks = [
+      { id: 1, title: 'Apply Copper Fungicide spray', date: '2026-07-24', priority: 'High', done: false },
+      { id: 2, title: 'Water wheat fields (Drip check)', date: '2026-07-25', priority: 'Medium', done: false }
+    ];
+
+    function renderCalendarTasks() {
+      const list = document.getElementById('calendar-checklist');
+      list.innerHTML = '';
+      tasks.forEach(t => {
+        list.innerHTML += `<div class="p-3 rounded-xl border border-emerald-500/20 flex items-center justify-between bg-emerald-950/40">
+          <div class="flex items-center gap-2">
+            <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTaskDone(${t.id})" class="rounded text-emerald-500 bg-emerald-950 focus:ring-0" />
+            <span class="${t.done ? 'line-through opacity-50' : ''} font-bold">${t.title} (${t.date})</span>
+          </div>
+          <span class="px-1.5 py-0.5 rounded text-[8px] bg-amber-500/20 text-amber-300 border border-amber-500/30 font-black uppercase">${t.priority}</span>
+        </div>`;
+      });
+
+      document.getElementById('dash-tasks').innerText = `${tasks.filter(t => !t.done).length} Pending Reminders`;
+    }
+
+    function addCalendarTask() {
+      const title = document.getElementById('cal-title').value;
+      const date = document.getElementById('cal-date').value;
+      const priority = document.getElementById('cal-priority').value;
+
+      tasks.push({ id: Date.now(), title, date, priority, done: false });
+      document.getElementById('cal-title').value = '';
+      renderCalendarTasks();
+    }
+
+    function toggleTaskDone(id) {
+      tasks = tasks.map(t => t.id === id ? { ...t, done: !t.done } : t);
+      renderCalendarTasks();
+    }
+
+    // --- Module 8: Alerts List ---
+    const activeAlerts = [
+      { title: 'Severe Hailstorm Warning tonight', desc: 'Heavy thunderstorm activity expected tonight between 11:00 PM and 2:00 AM.', type: 'critical' },
+      { title: 'Locust Swarm Advisory (Yellow Alert)', desc: 'Boundary trenching recommended to protect sprouting wheat crop beds.', type: 'critical' }
+    ];
+
+    function renderAlerts() {
+      const container = document.getElementById('alerts-list');
+      container.innerHTML = '';
+      activeAlerts.forEach(a => {
+        container.innerHTML += `<div class="p-4 rounded-2xl border bg-rose-950/40 border-rose-500/30 space-y-1">
+          <h3 class="text-sm font-bold text-rose-300">⚠️ ${a.title}</h3>
+          <p class="text-xs text-rose-200/80 leading-relaxed">${a.desc}</p>
+        </div>`;
+      });
+    }
+
+    // --- Module 9: AI Chatbot ---
+    function sendChatMessage() {
+      const input = document.getElementById('chat-input-text');
+      const text = input.value.trim();
+      const lang = document.getElementById('chat-lang').value;
+      if (!text) return;
+
+      const msgBox = document.getElementById('chat-messages');
+      msgBox.innerHTML += `<div class="p-3 rounded-2xl bg-emerald-900/30 text-emerald-100 max-w-[85%] ml-auto text-right">${text}</div>`;
+      input.value = '';
+
+      let reply = "I am analyzing your soil pH and moisture parameters to give the best advice.";
+      if (lang === 'Hindi') {
+        reply = "मैं आपकी फसल की स्थिति की जांच कर रहा हूं। नाइट्रोजन की कमी को पूरा करने के लिए जैविक खाद का प्रयोग करें।";
+      } else if (lang === 'Punjabi') {
+        reply = "ਮੈਂ ਤੁਹਾਡੀ ਫਸਲ ਦੀ ਸਿਹਤ ਦੀ ਜਾਂਚ ਕਰ ਰਿਹਾ ਹਾਂ। ਪਾਣੀ ਦਾ ਛਿੜਕਾਅ ਸਵੇਰੇ ਕਰੋ।";
+      } else if (lang === 'Spanish') {
+        reply = "Estoy analizando la salud de sus cultivos. Aplique fungicida de cobre orgánico.";
+      }
+
+      setTimeout(() => {
+        msgBox.innerHTML += `<div class="p-3 rounded-2xl bg-emerald-900/60 border border-emerald-500/20 text-emerald-100 max-w-[85%]">${reply}</div>`;
+        msgBox.scrollTop = msgBox.scrollHeight;
+
+        // Multilingual speech synthesis voice feedback simulation
+        if ('speechSynthesis' in window) {
+          const speech = new SpeechSynthesisUtterance(reply);
+          if (lang === 'Hindi') speech.lang = 'hi-IN';
+          else if (lang === 'Spanish') speech.lang = 'es-ES';
+          else speech.lang = 'en-US';
+          window.speechSynthesis.speak(speech);
+        }
+      }, 1000);
+    }
+
+    // Initialize all datasets
+    window.addEventListener('DOMContentLoaded', () => {
+      renderExpenses();
+      renderCropListings();
+      renderSchemes();
+      renderForum();
+      renderCalendarTasks();
+      renderAlerts();
+      lucide.createIcons();
+    });
+  </script>
+</body>
 </html>
