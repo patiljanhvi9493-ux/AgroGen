@@ -281,6 +281,11 @@
         </div>
       </div>
 
+      <!-- Error Message Container -->
+      <div id="scanner-error-card" class="hidden max-w-3xl mx-auto p-4 rounded-2xl bg-rose-950/60 border border-rose-500/35 text-rose-300 text-xs text-center font-bold mb-4">
+        ⚠️ The uploaded image does not appear to be a crop or plant leaf. Please upload or capture a clear, bright picture of a plant leaf.
+      </div>
+
       <!-- Result card -->
       <div id="diagnostic-result-card" class="hidden max-w-3xl mx-auto glass-panel p-6 rounded-3xl border border-emerald-500/40 space-y-6">
         <div class="flex items-center justify-between pb-4 border-b border-emerald-800/40">
@@ -794,13 +799,56 @@
       }
     };
 
-    // --- Module 1: Disease Scanner ---
-    function runAiDiseaseScan(diseaseName) {
-      if (!diseaseName) {
-        const keys = Object.keys(mockDiseases);
-        diseaseName = keys[Math.floor(Math.random() * keys.length)];
+    function validateLeafImage(imgEl, callback) {
+      if (imgEl.src.includes('unsplash.com') || imgEl.src.startsWith('data:image/svg+xml') || imgEl.src.startsWith('https://images.unsplash.com')) {
+        return callback(true);
       }
 
+      const tempCanvas = document.createElement('canvas');
+      const ctx = tempCanvas.getContext('2d');
+      tempCanvas.width = 30;
+      tempCanvas.height = 30;
+
+      try {
+        ctx.drawImage(imgEl, 0, 0, 30, 30);
+        const imgData = ctx.getImageData(0, 0, 30, 30);
+        const data = imgData.data;
+
+        let totalBrightness = 0;
+        let plantColorPixels = 0;
+        const totalPixels = 30 * 30;
+
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i+1];
+          const b = data[i+2];
+
+          const brightness = (r + g + b) / 3;
+          totalBrightness += brightness;
+
+          const isGreen = (g > r * 0.7 && g > b * 1.1 && g > 40);
+          const isYellowBrown = (r > 60 && g > 50 && b < r * 0.85);
+          
+          if (isGreen || isYellowBrown) {
+            plantColorPixels++;
+          }
+        }
+
+        const avgBrightness = totalBrightness / totalPixels;
+        const plantColorRatio = plantColorPixels / totalPixels;
+
+        if (avgBrightness < 25 || plantColorRatio < 0.15) {
+          return callback(false);
+        }
+
+        callback(true);
+      } catch (e) {
+        callback(true);
+      }
+    }
+
+    // --- Module 1: Disease Scanner ---
+    function runAiDiseaseScan(diseaseName) {
       const previewImg = document.getElementById('scan-img-preview');
       if (!previewImg.src || previewImg.src.endsWith('index.html')) {
         previewImg.src = 'https://images.unsplash.com/photo-1592417817098-8f3d6eb19657?w=600&q=80';
@@ -811,26 +859,41 @@
       const laser = document.getElementById('laser-fx');
       laser.classList.remove('hidden');
       document.getElementById('diagnostic-result-card').classList.add('hidden');
+      document.getElementById('scanner-error-card').classList.add('hidden');
 
       setTimeout(() => {
         laser.classList.add('hidden');
-        const data = mockDiseases[diseaseName] || mockDiseases['Tomato Late Blight'];
-        
-        document.getElementById('diag-name').innerText = data.name;
-        document.getElementById('res-confidence').innerText = data.confidence;
-        document.getElementById('res-severity').innerText = data.severity;
-        document.getElementById('res-area').innerText = data.area;
-        document.getElementById('res-score').innerText = data.score;
 
-        document.getElementById('organic-treatment-panel').innerHTML = `<h4 class="font-bold text-emerald-300">🌱 Organic Solutions</h4>` + 
-          data.organic.map(item => `<p class="text-emerald-100/80 mt-1">• ${item}</p>`).join('');
+        validateLeafImage(previewImg, (isValid) => {
+          if (!isValid && !diseaseName) {
+            document.getElementById('scanner-error-card').classList.remove('hidden');
+            window.scrollTo({ top: 400, behavior: 'smooth' });
+            return;
+          }
 
-        document.getElementById('chemical-treatment-panel').innerHTML = `<h4 class="font-bold text-amber-300">🧪 Chemical Fungicides</h4>` + 
-          data.chemical.map(item => `<p class="text-emerald-100/80 mt-1">• ${item}</p>`).join('');
+          if (!diseaseName) {
+            const keys = Object.keys(mockDiseases);
+            diseaseName = keys[Math.floor(Math.random() * keys.length)];
+          }
 
-        document.getElementById('diagnostic-result-card').classList.remove('hidden');
-        triggerConfetti();
-        window.scrollTo({ top: 600, behavior: 'smooth' });
+          const data = mockDiseases[diseaseName] || mockDiseases['Tomato Late Blight'];
+          
+          document.getElementById('diag-name').innerText = data.name;
+          document.getElementById('res-confidence').innerText = data.confidence;
+          document.getElementById('res-severity').innerText = data.severity;
+          document.getElementById('res-area').innerText = data.area;
+          document.getElementById('res-score').innerText = data.score;
+
+          document.getElementById('organic-treatment-panel').innerHTML = `<h4 class="font-bold text-emerald-300">🌱 Organic Solutions</h4>` + 
+            data.organic.map(item => `<p class="text-emerald-100/80 mt-1">• ${item}</p>`).join('');
+
+          document.getElementById('chemical-treatment-panel').innerHTML = `<h4 class="font-bold text-amber-300">🧪 Chemical Fungicides</h4>` + 
+            data.chemical.map(item => `<p class="text-emerald-100/80 mt-1">• ${item}</p>`).join('');
+
+          document.getElementById('diagnostic-result-card').classList.remove('hidden');
+          triggerConfetti();
+          window.scrollTo({ top: 600, behavior: 'smooth' });
+        });
       }, 1500);
     }
 
