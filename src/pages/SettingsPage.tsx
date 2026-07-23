@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Settings as SettingsIcon, 
   Bell, 
@@ -8,22 +8,27 @@ import {
 } from 'lucide-react';
 
 export const SettingsPage: React.FC = () => {
-
-
-
-
-  
   const [apiKey, setApiKey] = useState('');
   const [modelChoice, setModelChoice] = useState('agrogen-vision-v2');
   const [weatherAlerts, setWeatherAlerts] = useState(true);
   const [diseaseAlerts, setDiseaseAlerts] = useState(true);
   const [savedMsg, setSavedMsg] = useState(false);
 
+  useEffect(() => {
+    const savedKey = localStorage.getItem('agrogen_apiKey') || '';
+    const savedModel = localStorage.getItem('agrogen_modelChoice') || 'agrogen-vision-v2';
+    setApiKey(savedKey);
+    setModelChoice(savedModel);
+  }, []);
+
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+    localStorage.setItem('agrogen_apiKey', apiKey);
+    localStorage.setItem('agrogen_modelChoice', modelChoice);
     setSavedMsg(true);
     setTimeout(() => setSavedMsg(false), 2000);
   };
+
 
   return (
     <div className="space-y-8 py-4 pb-20 max-w-4xl mx-auto">
@@ -56,10 +61,12 @@ export const SettingsPage: React.FC = () => {
                 onChange={(e) => setModelChoice(e.target.value)}
                 className="w-full px-3 py-2.5 rounded-xl bg-emerald-900/40 border border-emerald-500/30 text-emerald-100 text-xs focus:outline-none"
               >
-                <option value="agrogen-vision-v2">AgroGen Plant Vision AI v2.4 (Default High Performance)</option>
-                <option value="gpt-4o-vision">OpenAI GPT-4o Vision API</option>
-                <option value="gemini-1.5-pro">Google Gemini 1.5 Pro Vision API</option>
-                <option value="claude-3-5-sonnet">Anthropic Claude 3.5 Sonnet Vision API</option>
+                <option value="agrogen-vision-v2">AgroGen Local Vision Engine (Simulated Fallback)</option>
+                <option value="gemini-2.5-flash">Google Gemini 2.5 Flash API (Recommended - Fast & Free tier)</option>
+                <option value="gemini-1.5-flash">Google Gemini 1.5 Flash API (Stable - Free tier)</option>
+                <option value="gemini-1.5-pro">Google Gemini 1.5 Pro API (High Accuracy)</option>
+                <option value="gpt-4o">OpenAI GPT-4o API (Requires API Key)</option>
+                <option value="gpt-4o-mini">OpenAI GPT-4o-Mini API (Fast & Low Cost)</option>
               </select>
             </div>
 
@@ -69,14 +76,31 @@ export const SettingsPage: React.FC = () => {
                 <Key className="w-4 h-4 text-emerald-400/60 absolute left-3 top-3" />
                 <input
                   type="password"
-                  placeholder="sk-..."
+                  placeholder="AI Key (AI Studio / OpenAI key)..."
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-emerald-900/30 border border-emerald-500/30 text-emerald-100 text-xs focus:outline-none"
+                  className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-emerald-900/30 border border-emerald-500/30 text-emerald-100 text-xs focus:outline-none font-mono"
                 />
               </div>
-              <span className="text-[10px] text-emerald-300/60 mt-1 block">
-                Leave blank to use built-in free AgroGen Neural Diagnostic Engine.
+              <span className="text-[10px] text-emerald-300/70 mt-2 block leading-relaxed">
+                Leave blank to use the built-in simulated engine. For real-time analysis, retrieve a free API Key from{' '}
+                <a 
+                  href="https://aistudio.google.com/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-emerald-400 hover:underline font-bold"
+                >
+                  Google AI Studio
+                </a>{' '}
+                or your{' '}
+                <a 
+                  href="https://platform.openai.com/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-emerald-400 hover:underline font-bold"
+                >
+                  OpenAI Platform
+                </a>.
               </span>
             </div>
           </div>

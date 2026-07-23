@@ -2,19 +2,224 @@ import { jsPDF } from 'jspdf';
 import type { DiseaseInfo } from '../data/mockData';
 import { MOCK_DISEASES } from '../data/mockData';
 
-export async function analyzePlantImage(_fileDataUrl: string, fileName: string = ''): Promise<DiseaseInfo> {
-  // Simulate AI deep learning processing latency
+export async function analyzePlantImage(fileDataUrl: string, fileName: string = '', cropType?: string): Promise<DiseaseInfo> {
+  const apiKey = localStorage.getItem('agrogen_apiKey');
+  const modelChoice = localStorage.getItem('agrogen_modelChoice') || 'agrogen-vision-v2';
+
+  const isRealAi = apiKey && apiKey.trim().length > 0 && modelChoice !== 'agrogen-vision-v2';
+
+  if (isRealAi) {
+    try {
+      // Parse the data URL to get base64 data and mime type
+      const match = fileDataUrl.match(/^data:([^;]+);base64,(.*)$/);
+      let mimeType = 'image/jpeg';
+      let base64Data = fileDataUrl;
+      if (match) {
+        mimeType = match[1];
+        base64Data = match[2];
+      }
+
+      let parsedResult: any = null;
+
+      if (modelChoice.startsWith('gemini')) {
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${modelChoice}:generateContent?key=${apiKey}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              contents: [
+                {
+                  parts: [
+                    {
+                      text: `You are an expert plant pathologist. Analyze this plant leaf image. 
+Identify the crop, the disease, pest ("rog" in Hindi), or nutrient deficiency affecting it. 
+You MUST respond strictly with a valid JSON object matching the JSON schema below. 
+Do not include any other text, explanations, or markdown code block markers. Just return the raw JSON object.
+
+JSON Schema:
+{
+  "id": "string (slug-format like 'tomato-late-blight')",
+  "name": "string (e.g. 'Tomato Late Blight (Phytophthora infestans)')",
+  "crop": "string (e.g. 'Tomato')",
+  "category": "Fungal" | "Bacterial" | "Viral" | "Pest" | "Nutrient" | "Environmental",
+  "confidence": number (between 0 and 100),
+  "severity": "Low" | "Moderate" | "High" | "Critical",
+  "affectedArea": "string (e.g. '35% of leaf surface')",
+  "healthScore": number (between 0 and 100),
+  "possibleCauses": ["string", "string", ...],
+  "symptoms": ["string", "string", ...],
+  "treatment": {
+    "organic": ["string", "string", ...],
+    "chemical": ["string", "string", ...]
+  },
+  "preventiveMeasures": ["string", "string", ...],
+  "expectedRecoveryTime": "string",
+  "recommendedFertilizers": ["string", ...],
+  "recommendedPesticides": ["string", ...]
+}`
+                    },
+                    {
+                      inlineData: {
+                        mimeType: mimeType,
+                        data: base64Data
+                      }
+                    }
+                  ]
+                }
+              ],
+              generationConfig: {
+                responseMimeType: "application/json"
+              }
+            })
+          }
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Gemini API error: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+
+        const resData = await response.json();
+        const rawText = resData.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!rawText) {
+          throw new Error("Empty response returned from Gemini.");
+        }
+        
+        let cleanedText = rawText.trim();
+        if (cleanedText.startsWith('```')) {
+          cleanedText = cleanedText.replace(/^```(?:json)?\s*/i, '').replace(/```$/, '').trim();
+        }
+        parsedResult = JSON.parse(cleanedText);
+
+      } else if (modelChoice.startsWith('gpt')) {
+        const apiModel = modelChoice === 'gpt-4o-mini' ? 'gpt-4o-mini' : 'gpt-4o';
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: apiModel,
+            response_format: { type: "json_object" },
+            messages: [
+              {
+                role: "user",
+                content: [
+                  {
+                    type: "text",
+                    text: `You are an expert plant pathologist. Analyze this plant leaf image. 
+Identify the crop, the disease, pest ("rog" in Hindi), or nutrient deficiency affecting it. 
+You MUST respond strictly with a valid JSON object matching the JSON schema below.
+
+JSON Schema:
+{
+  "id": "string (slug-format like 'tomato-late-blight')",
+  "name": "string (e.g. 'Tomato Late Blight (Phytophthora infestans)')",
+  "crop": "string (e.g. 'Tomato')",
+  "category": "Fungal" | "Bacterial" | "Viral" | "Pest" | "Nutrient" | "Environmental",
+  "confidence": number (between 0 and 100),
+  "severity": "Low" | "Moderate" | "High" | "Critical",
+  "affectedArea": "string (e.g. '35% of leaf surface')",
+  "healthScore": number (between 0 and 100),
+  "possibleCauses": ["string", "string", ...],
+  "symptoms": ["string", "string", ...],
+  "treatment": {
+    "organic": ["string", "string", ...],
+    "chemical": ["string", "string", ...]
+  },
+  "preventiveMeasures": ["string", "string", ...],
+  "expectedRecoveryTime": "string",
+  "recommendedFertilizers": ["string", ...],
+  "recommendedPesticides": ["string", ...]
+}`
+                  },
+                  {
+                    type: "image_url",
+                    image_url: {
+                      url: `data:${mimeType};base64,${base64Data}`
+                    }
+                  }
+                ]
+              }
+            ]
+          })
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`OpenAI API error: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+
+        const resData = await response.json();
+        const rawText = resData.choices?.[0]?.message?.content;
+        if (!rawText) {
+          throw new Error("Empty response returned from OpenAI.");
+        }
+
+        let cleanedText = rawText.trim();
+        if (cleanedText.startsWith('```')) {
+          cleanedText = cleanedText.replace(/^```(?:json)?\s*/i, '').replace(/```$/, '').trim();
+        }
+        parsedResult = JSON.parse(cleanedText);
+      }
+
+      if (parsedResult) {
+        // Ensure all required fields exist for front-end rendering and type safety
+        const validatedInfo: DiseaseInfo = {
+          id: parsedResult.id || `disease-${Date.now()}`,
+          name: parsedResult.name || 'Unknown Leaf Condition',
+          crop: parsedResult.crop || 'Unknown Plant',
+          category: parsedResult.category || 'Environmental',
+          confidence: typeof parsedResult.confidence === 'number' ? parsedResult.confidence : 85.0,
+          severity: parsedResult.severity || 'Moderate',
+          affectedArea: parsedResult.affectedArea || '15% of foliage',
+          healthScore: typeof parsedResult.healthScore === 'number' ? parsedResult.healthScore : 75,
+          possibleCauses: Array.isArray(parsedResult.possibleCauses) ? parsedResult.possibleCauses : ['Environmental conditions', 'Foliage moisture'],
+          symptoms: Array.isArray(parsedResult.symptoms) ? parsedResult.symptoms : ['Discoloration or lesion spot patterns observed'],
+          treatment: {
+            organic: Array.isArray(parsedResult.treatment?.organic) ? parsedResult.treatment.organic : ['Apply Neem oil spray preventative action'],
+            chemical: Array.isArray(parsedResult.treatment?.chemical) ? parsedResult.treatment.chemical : ['Apply multi-purpose fungicide spray']
+          },
+          preventiveMeasures: Array.isArray(parsedResult.preventiveMeasures) ? parsedResult.preventiveMeasures : ['Keep leaves dry and maintain crop rotation'],
+          expectedRecoveryTime: parsedResult.expectedRecoveryTime || '7 to 10 days',
+          recommendedFertilizers: Array.isArray(parsedResult.recommendedFertilizers) ? parsedResult.recommendedFertilizers : [],
+          recommendedPesticides: Array.isArray(parsedResult.recommendedPesticides) ? parsedResult.recommendedPesticides : [],
+          videos: Array.isArray(parsedResult.videos) ? parsedResult.videos : [
+            {
+              title: `How to manage ${parsedResult.name || 'crop health'}`,
+              duration: '4:30',
+              views: '1.2K views',
+              thumbnail: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=500&q=80',
+              url: '#'
+            }
+          ],
+          relatedDiseases: Array.isArray(parsedResult.relatedDiseases) ? parsedResult.relatedDiseases : [],
+          nearbyExperts: Array.isArray(parsedResult.nearbyExperts) ? parsedResult.nearbyExperts : ['exp-1', 'exp-2']
+        };
+
+        return validatedInfo;
+      }
+    } catch (error) {
+      console.error("AI Vision analysis failed, falling back to local simulation:", error);
+    }
+  }
+
+  // Simulate AI deep learning processing latency for simulated engine
   await new Promise((resolve) => setTimeout(resolve, 2400));
 
-  const lowerName = fileName.toLowerCase();
+  const lowerName = (cropType || fileName).toLowerCase();
 
   if (lowerName.includes('rice') || lowerName.includes('paddy')) {
     return MOCK_DISEASES['rice-blast'];
   } else if (lowerName.includes('wheat') || lowerName.includes('rust')) {
     return MOCK_DISEASES['wheat-rust'];
-  } else if (lowerName.includes('aphid') || lowerName.includes('pest') || lowerName.includes('bug')) {
+  } else if (lowerName.includes('aphid') || lowerName.includes('pest') || lowerName.includes('bug') || lowerName.includes('cotton')) {
     return MOCK_DISEASES['aphid-infestation'];
-  } else if (lowerName.includes('corn') || lowerName.includes('yellow') || lowerName.includes('nitrogen')) {
+  } else if (lowerName.includes('corn') || lowerName.includes('yellow') || lowerName.includes('nitrogen') || lowerName.includes('maize')) {
     return MOCK_DISEASES['nitrogen-deficiency'];
   }
 

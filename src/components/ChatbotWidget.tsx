@@ -72,7 +72,7 @@ export const ChatbotWidget: React.FC = () => {
 
     let reply = '';
     if (currentImg) {
-      const diag = await analyzePlantImage(currentImg, 'chat_upload.jpg');
+      const diag = await analyzePlantImage(currentImg, 'chat_upload.jpg', user.cropType);
       reply = `📸 I analyzed your uploaded leaf image!
       
 • Diagnostic: ${diag.name}

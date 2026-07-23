@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Upload, 
   Camera, 
@@ -18,7 +18,6 @@ import { analyzePlantImage, generateReportPDF } from '../services/aiEngine';
 import type { DiseaseInfo } from '../data/mockData';
 import { MOCK_EXPERTS, MOCK_PRODUCTS } from '../data/mockData';
 
-
 export const DiseaseDetectionPage: React.FC = () => {
   const { addReport, user, addToCart, setActiveTab } = useApp();
 
@@ -29,9 +28,15 @@ export const DiseaseDetectionPage: React.FC = () => {
   const [scanStepText, setScanStepText] = useState<string>('');
   const [analysisResult, setAnalysisResult] = useState<DiseaseInfo | null>(null);
   
-  // Camera Modal state
+  // Camera Modal & stream references
   const [cameraOpen, setCameraOpen] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  // Active AI settings state
+  const [modelChoice, setModelChoice] = useState<string>('agrogen-vision-v2');
+  const [hasKey, setHasKey] = useState<boolean>(false);
+  const [selectedCrop, setSelectedCrop] = useState<string>('tomato');
 
   const sampleLeafs = [
     { title: 'Tomato Blight Leaf', img: 'https://images.unsplash.com/photo-1592417817098-8f3d6eb19657?w=400&q=80', file: 'tomato_blight.jpg' },
@@ -39,6 +44,21 @@ export const DiseaseDetectionPage: React.FC = () => {
     { title: 'Wheat Rust Leaf', img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&q=80', file: 'wheat_rust.jpg' },
     { title: 'Corn Nutrient Deficiency', img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&q=80', file: 'corn_yellow.jpg' }
   ];
+
+  useEffect(() => {
+    // Read current settings from localStorage
+    const savedKey = localStorage.getItem('agrogen_apiKey') || '';
+    const savedModel = localStorage.getItem('agrogen_modelChoice') || 'agrogen-vision-v2';
+    setModelChoice(savedModel);
+    setHasKey(savedKey.trim().length > 0);
+
+    return () => {
+      // Clean up camera stream on unmount
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, []);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -64,33 +84,71 @@ export const DiseaseDetectionPage: React.FC = () => {
     setIsScanning(true);
     setAnalysisResult(null);
 
-    setScanStepText('Uploading leaf image to AgroGen Vision Engine...');
-    await new Promise((r) => setTimeout(r, 600));
+    const savedKey = localStorage.getItem('agrogen_apiKey') || '';
+    const savedModel = localStorage.getItem('agrogen_modelChoice') || 'agrogen-vision-v2';
+    const isReal = savedKey.trim().length > 0 && savedModel !== 'agrogen-vision-v2';
 
-    setScanStepText('Analyzing leaf discoloration & cellular lesion patterns...');
-    await new Promise((r) => setTimeout(r, 800));
+    if (isReal) {
+      const provider = savedModel.startsWith('gemini') ? 'Google Gemini' : 'OpenAI';
+      setScanStepText(`Uploading leaf to ${provider} Diagnostic Vision API...`);
+      await new Promise((r) => setTimeout(r, 600));
 
-    setScanStepText('Matching against 500+ crop pathogen signatures...');
-    await new Promise((r) => setTimeout(r, 700));
+      setScanStepText(`Analyzing leaf discoloration & cellular lesion patterns using AI...`);
+      await new Promise((r) => setTimeout(r, 800));
 
-    const result = await analyzePlantImage(imgUrl, name);
-    setAnalysisResult(result);
-    addReport(result);
-    setIsScanning(false);
+      setScanStepText('Synthesizing expert organic & chemical treatment recommendations...');
+      await new Promise((r) => setTimeout(r, 700));
+    } else {
+      setScanStepText('Uploading leaf image to AgroGen Local Vision Engine...');
+      await new Promise((r) => setTimeout(r, 600));
+
+      setScanStepText('Analyzing leaf discoloration & cellular lesion patterns...');
+      await new Promise((r) => setTimeout(r, 800));
+
+      setScanStepText('Matching against 500+ crop pathogen signatures...');
+      await new Promise((r) => setTimeout(r, 700));
+    }
+
+    try {
+      const result = await analyzePlantImage(imgUrl, name, isReal ? undefined : selectedCrop);
+      setAnalysisResult(result);
+      addReport(result);
+    } catch (err: any) {
+      alert(`AI Vision analysis failed: ${err.message || err}. Falling back to simulated scan.`);
+      const fallback = await analyzePlantImage(imgUrl, name, selectedCrop);
+      setAnalysisResult(fallback);
+      addReport(fallback);
+    } finally {
+      setIsScanning(false);
+    }
   };
 
   // Camera stream capture
   const startCamera = async () => {
     setCameraOpen(true);
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      });
+      streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
     } catch (err) {
-      alert('Camera access denied or not supported on this device.');
+      alert('Camera access denied or not supported on this device. Please check your browser permissions.');
       setCameraOpen(false);
     }
+  };
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+    setCameraOpen(false);
   };
 
   const capturePhoto = () => {
@@ -102,16 +160,13 @@ export const DiseaseDetectionPage: React.FC = () => {
       ctx?.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
       const dataUrl = canvas.toDataURL('image/jpeg');
 
-      // Stop camera stream
-      const stream = videoRef.current.srcObject as MediaStream;
-      stream?.getTracks().forEach((t) => t.stop());
-
-      setCameraOpen(false);
+      stopCamera();
       setSelectedImage(dataUrl);
       setImageName('camera_snapshot.jpg');
       runAiScan(dataUrl, 'camera_snapshot.jpg');
     }
   };
+
 
   return (
     <div className="space-y-8 py-4 pb-20">
@@ -128,6 +183,25 @@ export const DiseaseDetectionPage: React.FC = () => {
         <p className="text-xs sm:text-sm text-emerald-300/70">
           Upload leaf photos, take live camera snapshots, or test sample crops for instant 99% accurate disease identification.
         </p>
+      </div>
+
+      {/* Active Model Indicator Badge */}
+      <div className="max-w-4xl mx-auto mb-4 flex items-center justify-between p-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/20 text-xs text-emerald-200">
+        <div className="flex items-center gap-2">
+          <div className={`w-2.5 h-2.5 rounded-full ${hasKey && modelChoice !== 'agrogen-vision-v2' ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+          <span>
+            <strong>AI Vision Mode:</strong>{' '}
+            {hasKey && modelChoice !== 'agrogen-vision-v2'
+              ? `${modelChoice.includes('gemini') ? 'Google Gemini' : 'OpenAI'} (${modelChoice})`
+              : 'AgroGen Local Engine (Simulated Fallback)'}
+          </span>
+        </div>
+        <button
+          onClick={() => setActiveTab('settings')}
+          className="text-emerald-400 hover:underline font-bold"
+        >
+          Change in Settings →
+        </button>
       </div>
 
       {/* Main Upload Box & Scanner Area */}
@@ -159,7 +233,7 @@ export const DiseaseDetectionPage: React.FC = () => {
               )}
             </div>
           ) : (
-            <div className="border-2 border-dashed border-emerald-500/40 hover:border-emerald-400/80 rounded-3xl p-8 sm:p-12 transition-all space-y-4 bg-emerald-950/30">
+            <div className="border-2 border-dashed border-emerald-500/40 hover:border-emerald-400/80 rounded-3xl p-8 sm:p-12 transition-all space-y-5 bg-emerald-950/30">
               <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-400/30 flex items-center justify-center mx-auto text-emerald-400">
                 <Upload className="w-8 h-8" />
               </div>
@@ -168,6 +242,26 @@ export const DiseaseDetectionPage: React.FC = () => {
                 <h3 className="text-lg font-bold text-emerald-100">Drag & Drop Plant Leaf Photo</h3>
                 <p className="text-xs text-emerald-300/60">Supports PNG, JPG, JPEG, HEIC files (Max 25MB)</p>
               </div>
+
+              {/* Simulated Crop Selector */}
+              {(!hasKey || modelChoice === 'agrogen-vision-v2') && (
+                <div className="max-w-xs mx-auto space-y-1.5 p-3.5 rounded-2xl bg-emerald-900/10 border border-emerald-500/20 text-left">
+                  <label className="text-[10px] uppercase tracking-wider font-extrabold text-emerald-400 block">
+                    Target Crop for Simulated Scan
+                  </label>
+                  <select
+                    value={selectedCrop}
+                    onChange={(e) => setSelectedCrop(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-emerald-950 border border-emerald-500/30 text-emerald-100 text-xs focus:outline-none"
+                  >
+                    <option value="tomato">Tomato (Late Blight)</option>
+                    <option value="rice">Rice/Paddy (Rice Blast)</option>
+                    <option value="wheat">Wheat (Stripe Rust)</option>
+                    <option value="cotton">Cotton (Aphid Infestation)</option>
+                    <option value="corn">Corn/Maize (Nitrogen Deficiency)</option>
+                  </select>
+                </div>
+              )}
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
                 <label className="cursor-pointer px-5 py-2.5 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs hover:brightness-110 transition-all shadow-md shadow-emerald-500/20">
@@ -220,7 +314,7 @@ export const DiseaseDetectionPage: React.FC = () => {
             </div>
             <div className="flex gap-3">
               <button
-                onClick={() => setCameraOpen(false)}
+                onClick={stopCamera}
                 className="flex-1 py-2.5 rounded-xl bg-emerald-900/60 text-emerald-300 text-xs font-bold"
               >
                 Cancel
