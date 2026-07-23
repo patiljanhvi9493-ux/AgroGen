@@ -1264,7 +1264,9 @@
       renderForum();
       renderCalendarTasks();
       renderAlerts();
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
     });
   </script>
 </body>
