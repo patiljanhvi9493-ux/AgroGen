@@ -7,7 +7,9 @@ import {
   ShoppingBag, 
   Search, 
   Globe, 
-  ShieldCheck
+  ShieldCheck,
+  Menu,
+  X as CloseIcon
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import type { TabType } from '../context/AppContext';
@@ -26,6 +28,7 @@ export const Navbar: React.FC = () => {
 
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const [notifMenuOpen, setNotifMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const totalCartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -49,6 +52,14 @@ export const Navbar: React.FC = () => {
     <header className="sticky top-0 z-40 w-full glass-panel border-b border-emerald-500/20 bg-emerald-950/80 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         
+        {/* Mobile Hamburger Button */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="lg:hidden p-2 rounded-lg bg-emerald-900/40 border border-emerald-500/20 text-emerald-300 hover:bg-emerald-800/50 shrink-0"
+        >
+          {mobileMenuOpen ? <CloseIcon className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
+
         {/* Brand Logo */}
         <div 
           onClick={() => setActiveTab('landing')}
@@ -212,6 +223,32 @@ export const Navbar: React.FC = () => {
 
         </div>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden w-full bg-emerald-950/95 border-t border-emerald-500/20 p-4 space-y-2 text-xs font-bold animate-fadeInUp">
+          {navLinks.map((link) => (
+            <button
+              key={link.tab}
+              onClick={() => {
+                setActiveTab(link.tab);
+                setMobileMenuOpen(false);
+              }}
+              className="w-full text-left py-2.5 px-3.5 rounded-lg hover:bg-emerald-900/40 text-emerald-100/80 hover:text-emerald-200 block border-b border-emerald-900/20"
+            >
+              {link.label}
+            </button>
+          ))}
+          {/* Add extra mobile quick links */}
+          <button onClick={() => { setActiveTab('planner'); setMobileMenuOpen(false); }} className="w-full text-left py-2.5 px-3.5 rounded-lg hover:bg-emerald-900/40 text-emerald-100/80 hover:text-emerald-200 block border-b border-emerald-900/20">🌱 Smart Planner</button>
+          <button onClick={() => { setActiveTab('expenses'); setMobileMenuOpen(false); }} className="w-full text-left py-2.5 px-3.5 rounded-lg hover:bg-emerald-900/40 text-emerald-100/80 hover:text-emerald-200 block border-b border-emerald-900/20">💵 Expense Tracker</button>
+          <button onClick={() => { setActiveTab('selling'); setMobileMenuOpen(false); }} className="w-full text-left py-2.5 px-3.5 rounded-lg hover:bg-emerald-900/40 text-emerald-100/80 hover:text-emerald-200 block border-b border-emerald-900/20">📈 Direct Selling</button>
+          <button onClick={() => { setActiveTab('schemes'); setMobileMenuOpen(false); }} className="w-full text-left py-2.5 px-3.5 rounded-lg hover:bg-emerald-900/40 text-emerald-100/80 hover:text-emerald-200 block border-b border-emerald-900/20">🏆 Government Schemes</button>
+          <button onClick={() => { setActiveTab('forum'); setMobileMenuOpen(false); }} className="w-full text-left py-2.5 px-3.5 rounded-lg hover:bg-emerald-900/40 text-emerald-100/80 hover:text-emerald-200 block border-b border-emerald-900/20">💬 Community Forum</button>
+          <button onClick={() => { setActiveTab('calendar'); setMobileMenuOpen(false); }} className="w-full text-left py-2.5 px-3.5 rounded-lg hover:bg-emerald-900/40 text-emerald-100/80 hover:text-emerald-200 block border-b border-emerald-900/20">📅 Crop Calendar</button>
+          <button onClick={() => { setActiveTab('alerts'); setMobileMenuOpen(false); }} className="w-full text-left py-2.5 px-3.5 rounded-lg hover:bg-emerald-900/40 text-emerald-100/80 hover:text-emerald-200 block">🔔 Alerts & Advisory</button>
+        </div>
+      )}
     </header>
   );
 };

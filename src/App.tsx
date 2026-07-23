@@ -18,6 +18,13 @@ import { ReportsPage } from './pages/ReportsPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { SettingsPage } from './pages/SettingsPage';
 import { AdminPanelPage } from './pages/AdminPanelPage';
+import { ExpensesPage } from './pages/ExpensesPage';
+import { PlannerPage } from './pages/PlannerPage';
+import { SchemesPage } from './pages/SchemesPage';
+import { ForumPage } from './pages/ForumPage';
+import { SellingPage } from './pages/SellingPage';
+import { CalendarPage } from './pages/CalendarPage';
+import { AlertsPage } from './pages/AlertsPage';
 
 const MainContent: React.FC = () => {
   const { activeTab } = useApp();
@@ -48,6 +55,20 @@ const MainContent: React.FC = () => {
         return <SettingsPage />;
       case 'admin':
         return <AdminPanelPage />;
+      case 'expenses':
+        return <ExpensesPage />;
+      case 'planner':
+        return <PlannerPage />;
+      case 'schemes':
+        return <SchemesPage />;
+      case 'forum':
+        return <ForumPage />;
+      case 'selling':
+        return <SellingPage />;
+      case 'calendar':
+        return <CalendarPage />;
+      case 'alerts':
+        return <AlertsPage />;
       default:
         return <LandingPage />;
     }

@@ -14,7 +14,14 @@ export type TabType =
   | 'reports' 
   | 'profile' 
   | 'settings' 
-  | 'admin';
+  | 'admin'
+  | 'expenses'
+  | 'planner'
+  | 'schemes'
+  | 'forum'
+  | 'selling'
+  | 'calendar'
+  | 'alerts';
 
 export interface UserProfile {
   name: string;

@@ -13,7 +13,14 @@ import {
   Settings as SettingsIcon, 
   ShieldAlert, 
   LogOut,
-  Sparkles
+  Sparkles,
+  DollarSign,
+  Award,
+  MessageSquare,
+  TrendingUp,
+  Calendar,
+  Bell,
+  Sprout
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import type { TabType } from '../context/AppContext';
@@ -28,6 +35,13 @@ export const Sidebar: React.FC = () => {
     { label: 'My Reports', tab: 'reports', icon: FileSpreadsheet },
     { label: 'Live Weather', tab: 'weather', icon: CloudSun },
     { label: 'AI Chatbot', tab: 'chatbot', icon: Bot, badge: '24/7' },
+    { label: 'Smart Planner', tab: 'planner', icon: Sprout, badge: 'Soil AI' },
+    { label: 'Expense Tracker', tab: 'expenses', icon: DollarSign },
+    { label: 'Direct Selling', tab: 'selling', icon: TrendingUp },
+    { label: 'Government Schemes', tab: 'schemes', icon: Award },
+    { label: 'Community Forum', tab: 'forum', icon: MessageSquare },
+    { label: 'Crop Calendar', tab: 'calendar', icon: Calendar },
+    { label: 'Alerts & Advisory', tab: 'alerts', icon: Bell },
     { label: 'Crop Library', tab: 'crops', icon: BookOpen },
     { label: 'Knowledge Center', tab: 'knowledge', icon: GraduationCap },
     { label: 'Marketplace', tab: 'marketplace', icon: ShoppingBag },

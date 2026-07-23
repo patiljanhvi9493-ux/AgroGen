@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgroGen - AI Powered Smart Farming Assistant</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- jsPDF for PDF Report Generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- Canvas Confetti for Achievements & Checkout -->
+  <script src="https://cdn.jsdelivr.com/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <!-- Google Fonts Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #09100c;
+      color: #f0fdf4;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* Glassmorphic Design Tokens */
+    .glass-panel {
+      background: rgba(18, 30, 22, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(74, 222, 128, 0.18);
+    }
+
+    .glass-card {
+      background: linear-gradient(135deg, rgba(22, 38, 28, 0.85) 0%, rgba(13, 24, 17, 0.9) 100%);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(74, 222, 128, 0.15);
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .glass-card:hover {
+      border-color: rgba(74, 222, 128, 0.5);
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 12px 35px -5px rgba(34, 197, 94, 0.3);
+    }
+
+    /* Keyframe Animations */
+    @keyframes floatGlow {
+      0%, 100% { transform: translateY(0px) scale(1); opacity: 0.35; }
+      50% { transform: translateY(-15px) scale(1.08); opacity: 0.75; }
+    }
+
+    .animate-float-glow {
+      animation: floatGlow 6s ease-in-out infinite;
+    }
+
+    @keyframes laserScan {
+      0% { top: 0%; opacity: 0.8; }
+      50% { top: 95%; opacity: 1; }
+      100% { top: 0%; opacity: 0.8; }
+    }
+
+    .animate-laser-scan {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #22c55e, #86efac, #22c55e, transparent);
+      box-shadow: 0 0 20px 4px rgba(34, 197, 94, 0.9);
+      animation: laserScan 2.2s infinite ease-in-out;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fadeInUp {
+      animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .glow-text {
+      text-shadow: 0 0 25px rgba(74, 222, 128, 0.6);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: rgba(9, 16, 12, 0.9); }
+    ::-webkit-scrollbar-thumb { background: rgba(34, 197, 94, 0.35); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(34, 197, 94, 0.7); }
+  </style>
+</head>
+<body class="bg-[#09100c] text-emerald-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-emerald-950">
+
+  <!-- Floating Ambient Glowing Background Orbs -->
+  <div class="fixed top-[-10%] left-[-10%] w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-float-glow pointer-events-none z-0"></div>
+  <div class="fixed bottom-[-10%] right-[-10%] w-96 h-96 bg-teal-500/10 rounded-full blur-3xl animate-float-glow pointer-events-none z-0" style="animation-delay: -3s;"></div>
+
+  <!-- ================= NAVBAR ================= -->
+  <header class="sticky top-0 z-40 w-full glass-panel border-b border-emerald-500/20 bg-emerald-950/90 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <div onclick="switchTab('landing')" class="flex items-center gap-3 cursor-pointer group shrink-0">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-green-400 to-teal-300 p-0.5 shadow-lg shadow-emerald-500/30 group-hover:scale-105 transition-transform">
+          <div class="w-full h-full bg-emerald-950 rounded-[10px] flex items-center justify-center font-bold text-emerald-300 text-lg">
+            🌱
+          </div>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-300 via-green-200 to-teal-200 bg-clip-text text-transparent glow-text">
+            AgroGen
+          </span>
+          <span class="text-[10px] font-semibold text-emerald-400/80 uppercase tracking-widest -mt-1">
+            Smart AI Farming
+          </span>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
+        <button onclick="switchTab('landing')" id="nav-landing" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm">Home</button>
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Dashboard</button>
+        <button onclick="switchTab('detection')" id="nav-detection" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Disease Detection</button>
+        <button onclick="switchTab('crops')" id="nav-crops" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Crop Library</button>
+        <button onclick="switchTab('knowledge')" id="nav-knowledge" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Knowledge</button>
+        <button onclick="switchTab('weather')" id="nav-weather" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Weather</button>
+        <button onclick="switchTab('marketplace')" id="nav-marketplace" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Marketplace</button>
+        <button onclick="switchTab('consultation')" id="nav-consultation" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40">Book Expert</button>
+      </nav>
+
+      <!-- Right Header Actions -->
+      <div class="flex items-center gap-3">
+        <button onclick="switchTab('admin')" class="px-3 py-1.5 rounded-xl bg-teal-900/40 border border-teal-500/30 text-teal-300 text-xs font-extrabold hover:bg-teal-800/60">
+          Admin Console
+        </button>
+
+        <button onclick="toggleAuthModal()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-emerald-950 font-extrabold text-xs shadow-md shadow-emerald-500/20 hover:brightness-110">
+          Login / Signup
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= MAIN APP BODY ================= -->
+  <div class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 z-10">
+
+    <!-- TAB 1: LANDING PAGE -->
+    <section id="tab-landing" class="tab-page animate-fadeInUp space-y-16 py-4 pb-20">
+      <!-- Hero Banner -->
+      <div class="relative rounded-3xl overflow-hidden glass-panel p-8 sm:p-12 lg:p-16 border border-emerald-500/30 bg-gradient-to-br from-emerald-950/90 via-emerald-900/50 to-teal-950/90 text-center space-y-6 shadow-2xl">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-xs font-bold shadow-lg">
+          <span>✨ Next-Gen AI Powered Smart Agriculture Platform</span>
+        </div>
+
+        <h1 class="text-4xl sm:text-6xl font-black text-emerald-100 tracking-tight leading-tight">
+          AI Powered <br class="hidden sm:block" />
+          <span class="bg-gradient-to-r from-emerald-300 via-green-200 to-teal-300 bg-clip-text text-transparent glow-text">
+            Smart Farming Assistant
+          </span>
+        </h1>
+
+        <p class="text-base sm:text-lg text-emerald-100/80 max-w-2xl mx-auto leading-relaxed">
+          Detect plant diseases instantly, identify destructive pests, receive 24/7 AI guidance, track weather risks, and maximize crop health.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <button onclick="switchTab('detection')" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-green-500 to-teal-400 text-emerald-950 font-extrabold text-base shadow-xl shadow-emerald-500/30 hover:scale-105 hover:brightness-110 transition-all">
+            🔍 Detect Disease Now
+          </button>
+          <button onclick="toggleChatbot()" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-900/60 border border-emerald-500/40 text-emerald-200 font-bold text-base hover:bg-emerald-800/80 transition-all">
+            🤖 Talk to AI Assistant
+          </button>
+        </div>
+
+        <!-- Live Statistics Counter Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-12 border-t border-emerald-500/20 mt-12">
+          <div class="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
+            <span class="text-3xl font-black text-emerald-300 block">250,000+</span>
+            <span class="text-xs font-semibold text-emerald-200/70">Diseases Identified</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
+            <span class="text-3xl font-black text-emerald-300 block">85,000+</span>
+            <span class="text-xs font-semibold text-emerald-200/70">Farmers Using Platform</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
+            <span class="text-3xl font-black text-emerald-300 block">98.7%</span>
+            <span class="text-xs font-semibold text-emerald-200/70">AI Scan Accuracy</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
+            <span class="text-3xl font-black text-emerald-300 block">500+</span>
+            <span class="text-xs font-semibold text-emerald-200/70">Verified Expert Doctors</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features Cards -->
+      <div class="space-y-6">
+        <h2 class="text-3xl font-bold text-emerald-100 text-center">Engineered for Maximum Crop Yield</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div onclick="switchTab('detection')" class="glass-card p-6 rounded-3xl space-y-3 cursor-pointer">
+            <div class="text-3xl">🔬</div>
+            <h3 class="text-lg font-bold text-emerald-100">AI Disease Detection</h3>
+            <p class="text-xs text-emerald-100/70">Scan leaf, fruit, stem, and root photos for instant pathogen analysis & PDF reports.</p>
+          </div>
+          <div onclick="switchTab('detection')" class="glass-card p-6 rounded-3xl space-y-3 cursor-pointer">
+            <div class="text-3xl">🐛</div>
+            <h3 class="text-lg font-bold text-emerald-100">Pest & Bug Identification</h3>
+            <p class="text-xs text-emerald-100/70">Identify aphids, bollworms, and caterpillars with organic neem remedies.</p>
+          </div>
+          <div onclick="toggleChatbot()" class="glass-card p-6 rounded-3xl space-y-3 cursor-pointer">
+            <div class="text-3xl">🤖</div>
+            <h3 class="text-lg font-bold text-emerald-100">24/7 AI Chatbot</h3>
+            <p class="text-xs text-emerald-100/70">Ask crop questions via voice, text, or photo upload in multiple languages.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: DISEASE DETECTION -->
+    <section id="tab-detection" class="tab-page hidden animate-fadeInUp space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2 max-w-2xl mx-auto">
+        <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-xs font-bold">Real-time Vision Pathology</span>
+        <h2 class="text-3xl font-black text-emerald-100">Plant Disease Diagnostics</h2>
+        <p class="text-xs text-emerald-300/70">Upload leaf photos, take live camera snapshots, or test demo plant samples.</p>
+      </div>
+
+      <div class="max-w-4xl mx-auto glass-panel p-8 rounded-3xl border border-emerald-500/30 text-center space-y-6">
+        <div id="scanner-upload-box" class="border-2 border-dashed border-emerald-500/40 p-8 rounded-3xl space-y-4 bg-emerald-950/40 relative overflow-hidden">
+          <div id="laser-fx" class="hidden animate-laser-scan"></div>
+          
+          <!-- STATE 1: Empty Placeholder -->
+          <div id="scanner-placeholder-view" class="space-y-4 py-8">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="w-16 h-16 mx-auto opacity-70">
+              <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 2 .5 8.2-1 2.5-3.5 4.9-6.3 7.8-.8.8-1.4 1.8-2.2 2Z"></path>
+              <path d="M19 2c-2.2 4-6 6-9 8"></path>
+            </svg>
+            <div class="space-y-1">
+              <h3 class="text-lg font-bold text-emerald-100">Select Plant Leaf Photo</h3>
+              <p class="text-xs text-emerald-300/60">Upload a photo of a plant leaf or take a live camera snapshot</p>
+            </div>
+            <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <label class="cursor-pointer px-5 py-2.5 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs hover:brightness-110 transition-all shadow-md shadow-emerald-500/20">
+                <span>Browse Photo</span>
+                <input type="file" accept="image/*" onchange="handleFileSelect(event)" class="hidden" />
+              </label>
+              <button onclick="triggerCameraFeed()" class="px-5 py-2.5 rounded-xl bg-emerald-900/60 border border-emerald-500/30 text-emerald-200 font-bold text-xs hover:bg-emerald-800/80 transition-colors">
+                📸 Take Live Photo
+              </button>
+            </div>
+          </div>
+
+          <!-- STATE 2: Image Preview -->
+          <div id="scanner-preview-view" class="hidden space-y-4">
+            <div class="relative max-w-md mx-auto rounded-2xl overflow-hidden border border-emerald-500/30 shadow-lg bg-emerald-950/40">
+              <img id="scan-img-preview" src="" alt="Selected plant leaf" class="w-full h-64 object-cover" />
+              <button onclick="resetScannerImage()" class="absolute top-3 right-3 px-3 py-1.5 rounded-xl bg-black/75 text-emerald-300 hover:bg-black/90 text-xs font-bold transition-colors">
+                Change Photo
+              </button>
+            </div>
+            <div class="flex items-center justify-center gap-3 pt-2">
+              <button onclick="runAiDiseaseScan()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-emerald-950 font-black text-xs shadow-lg hover:brightness-110 transition-all">
+                Run AI Diagnostic Scan
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Sample Leaf Test Chips -->
+        <div class="pt-4 border-t border-emerald-900/40 space-y-2">
+          <span class="text-xs font-semibold text-emerald-300/70 block uppercase">Test Demo Crop Samples:</span>
+          <div class="flex flex-wrap justify-center gap-2">
+            <button onclick="runAiDiseaseScan('Tomato Late Blight')" class="px-3.5 py-2 rounded-xl bg-emerald-900/40 border border-emerald-500/20 text-xs font-bold text-emerald-200 hover:border-emerald-400">Tomato Late Blight Leaf</button>
+            <button onclick="runAiDiseaseScan('Rice Blast Disease')" class="px-3.5 py-2 rounded-xl bg-emerald-900/40 border border-emerald-500/20 text-xs font-bold text-emerald-200 hover:border-emerald-400">Paddy Rice Blast Leaf</button>
+            <button onclick="runAiDiseaseScan('Wheat Yellow Rust')" class="px-3.5 py-2 rounded-xl bg-emerald-900/40 border border-emerald-500/20 text-xs font-bold text-emerald-200 hover:border-emerald-400">Wheat Yellow Rust Leaf</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Diagnostic Results Card -->
+      <div id="diagnostic-result-card" class="hidden max-w-4xl mx-auto glass-panel p-8 rounded-3xl border border-emerald-500/40 space-y-6 bg-gradient-to-br from-emerald-950 via-emerald-900/50 to-teal-950 shadow-2xl animate-fadeInUp">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-emerald-800/40">
+          <div>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Fungal Pathogen</span>
+            <h3 id="diag-name" class="text-2xl font-black text-emerald-100 mt-1">Tomato Late Blight (Phytophthora infestans)</h3>
+          </div>
+          <button onclick="downloadPdfReport()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-emerald-950 font-black text-xs shadow-lg hover:brightness-110">
+            📥 Download PDF Report
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="p-3 rounded-xl bg-emerald-900/40 border border-emerald-500/20">
+            <span class="text-[10px] text-emerald-400 font-bold block uppercase">AI Confidence</span>
+            <span class="text-xl font-black text-emerald-200">96.8%</span>
+          </div>
+          <div class="p-3 rounded-xl bg-emerald-900/40 border border-emerald-500/20">
+            <span class="text-[10px] text-emerald-400 font-bold block uppercase">Severity</span>
+            <span class="text-xl font-black text-amber-400">High</span>
+          </div>
+          <div class="p-3 rounded-xl bg-emerald-900/40 border border-emerald-500/20">
+            <span class="text-[10px] text-emerald-400 font-bold block uppercase">Affected Area</span>
+            <span class="text-sm font-bold text-emerald-100">35% of foliage</span>
+          </div>
+          <div class="p-3 rounded-xl bg-emerald-900/40 border border-emerald-500/20">
+            <span class="text-[10px] text-emerald-400 font-bold block uppercase">Health Score</span>
+            <span class="text-xl font-black text-emerald-300">62/100</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-4 rounded-2xl bg-emerald-950/60 border border-emerald-500/30 space-y-2">
+            <h4 class="text-xs font-bold text-emerald-300">🌱 Organic Remedies</h4>
+            <p class="text-xs text-emerald-100/80">• Apply Copper Octanoate / Liquid Copper Fungicide spray twice weekly.</p>
+            <p class="text-xs text-emerald-100/80">• Spray Neem Oil (0.5% concentration) combined with potassium bicarbonate.</p>
+          </div>
+          <div class="p-4 rounded-2xl bg-emerald-950/60 border border-amber-500/30 space-y-2">
+            <h4 class="text-xs font-bold text-amber-300">🧪 Chemical Remedies</h4>
+            <p class="text-xs text-emerald-100/80">• Apply Chlorothalonil or Mancozeb preventative sprays.</p>
+            <p class="text-xs text-emerald-100/80">• Use systemic fungicides such as Cymoxanil or Dimethomorph.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: DASHBOARD -->
+    <section id="tab-dashboard" class="tab-page hidden animate-fadeInUp space-y-8 py-4 pb-20">
+      <div class="glass-panel p-8 rounded-3xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950 to-teal-950 space-y-2 shadow-2xl">
+        <h2 class="text-3xl font-extrabold text-emerald-100">Good Afternoon, Farmer Ramesh! 🌾</h2>
+        <p class="text-xs text-emerald-300/80">Your primary crops (Tomato & Wheat) in Punjab have an average health index of <strong class="text-emerald-300">88/100</strong>.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-6">
+        <div class="glass-card p-5 rounded-3xl space-y-2">
+          <span class="text-[10px] font-bold text-emerald-400 uppercase">Recent Scan</span>
+          <h3 class="text-sm font-bold text-emerald-100">Tomato Late Blight</h3>
+          <span class="text-xs text-amber-400 font-bold">Severity: High (96.8%)</span>
+        </div>
+        <div class="glass-card p-5 rounded-3xl space-y-2">
+          <span class="text-[10px] font-bold text-emerald-400 uppercase">Today's Weather</span>
+          <h3 class="text-xl font-black text-emerald-100">28°C</h3>
+          <span class="text-xs text-emerald-300/80">Humidity: 68%</span>
+        </div>
+        <div class="glass-card p-5 rounded-3xl space-y-2">
+          <span class="text-[10px] font-bold text-emerald-400 uppercase">Crop Health Index</span>
+          <h3 class="text-2xl font-black text-emerald-300">88 / 100</h3>
+          <span class="text-xs text-emerald-400 font-bold">Optimal Condition</span>
+        </div>
+        <div class="glass-card p-5 rounded-3xl space-y-2">
+          <span class="text-[10px] font-bold text-teal-400 uppercase">Pending Consultation</span>
+          <h3 class="text-sm font-bold text-emerald-100">Dr. Rajesh Kumar</h3>
+          <span class="text-xs text-teal-300 font-bold">Today @ 04:00 PM</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: CROP LIBRARY -->
+    <section id="tab-crops" class="tab-page hidden animate-fadeInUp space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2 max-w-2xl mx-auto">
+        <h2 class="text-3xl font-extrabold text-emerald-100">Crop Library</h2>
+        <p class="text-xs text-emerald-300/70">Agronomic guides for soil pH, climate, water, and market prices.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1536657464919-892534f60d6e?w=500&q=80" alt="Rice" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-lg font-bold text-emerald-100">Rice (Paddy)</h3>
+          <p class="text-xs text-emerald-300/80">Ideal Climate: 20°C - 35°C | Soil pH: 5.5 - 6.5</p>
+          <span class="text-sm font-black text-emerald-300 block">$380 / Ton</span>
+        </div>
+
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=500&q=80" alt="Wheat" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-lg font-bold text-emerald-100">Wheat</h3>
+          <p class="text-xs text-emerald-300/80">Ideal Climate: 10°C - 25°C | Soil pH: 6.0 - 7.5</p>
+          <span class="text-sm font-black text-emerald-300 block">$290 / Ton</span>
+        </div>
+
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1592417817098-8f3d6eb19657?w=500&q=80" alt="Tomato" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-lg font-bold text-emerald-100">Tomato</h3>
+          <p class="text-xs text-emerald-300/80">Ideal Climate: 18°C - 28°C | Soil pH: 6.0 - 6.8</p>
+          <span class="text-sm font-black text-emerald-300 block">$420 / Ton</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: KNOWLEDGE -->
+    <section id="tab-knowledge" class="tab-page hidden animate-fadeInUp space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2 max-w-2xl mx-auto">
+        <h2 class="text-3xl font-extrabold text-emerald-100">Knowledge Center</h2>
+        <p class="text-xs text-emerald-300/70">Guides for organic farming, hydroponics, and government subsidies.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=500&q=80" alt="Organic Formulation" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-base font-bold text-emerald-100">Organic Bio-Pesticides Guide</h3>
+          <p class="text-xs text-emerald-100/70">Learn how to formulate natural bio-pesticides using neem leaves and buttermilk.</p>
+        </div>
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1558449028-b53a39d100fc?w=500&q=80" alt="Hydroponics" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-base font-bold text-emerald-100">Hydroponics & Vertical Farming</h3>
+          <p class="text-xs text-emerald-100/70">Maximize crop yield per square foot using indoor NFT hydroponic pipes.</p>
+        </div>
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=500&q=80" alt="Government Subsidies" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-base font-bold text-emerald-100">Government Drip Subsidy 2026</h3>
+          <p class="text-xs text-emerald-100/70">Claim up to 80% subsidy on precision drip lines and solar water pumps.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6: WEATHER -->
+    <section id="tab-weather" class="tab-page hidden animate-fadeInUp space-y-8 py-4 pb-20">
+      <div class="glass-panel p-8 rounded-3xl border border-emerald-500/30 text-center space-y-4 max-w-3xl mx-auto shadow-2xl">
+        <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-300 text-xs font-bold">Hyper-Local Microclimate</span>
+        <h2 class="text-4xl font-black text-emerald-100">28°C <span class="text-sm font-normal text-emerald-300/80">Partly Cloudy</span></h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-4">
+          <div class="p-3 rounded-2xl bg-emerald-900/40 border border-emerald-500/20">Humidity: 68%</div>
+          <div class="p-3 rounded-2xl bg-emerald-900/40 border border-emerald-500/20">Wind: 14 km/h</div>
+          <div class="p-3 rounded-2xl bg-emerald-900/40 border border-emerald-500/20">Rain Chance: 10%</div>
+          <div class="p-3 rounded-2xl bg-emerald-900/40 border border-emerald-500/20">UV Index: 6.2</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 7: MARKETPLACE -->
+    <section id="tab-marketplace" class="tab-page hidden animate-fadeInUp space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2">
+        <h2 class="text-3xl font-extrabold text-emerald-100">Agri-Marketplace</h2>
+        <p class="text-xs text-emerald-300/70">Certified bio-pesticides, organic fertilizers, seeds, and smart irrigation kits.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&q=80" alt="Copper Fungicide" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-base font-bold text-emerald-100">AgroShield Copper Bio-Fungicide</h3>
+          <span class="text-lg font-black text-emerald-300 block">$24.99</span>
+          <button onclick="triggerConfetti('Item added to cart!')" class="w-full py-2 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs shadow hover:brightness-110">Add to Cart</button>
+        </div>
+
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1585314062340-f1a5a7c9328d?w=500&q=80" alt="Nano Nitrogen" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-base font-bold text-emerald-100">Nano Nitrogen Bio-Foliar Spray</h3>
+          <span class="text-lg font-black text-emerald-300 block">$18.50</span>
+          <button onclick="triggerConfetti('Item added to cart!')" class="w-full py-2 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs shadow hover:brightness-110">Add to Cart</button>
+        </div>
+
+        <div class="glass-card p-5 rounded-3xl space-y-3">
+          <img src="https://images.unsplash.com/photo-1592417817098-8f3d6eb19657?w=500&q=80" alt="Tomato Seeds" class="w-full h-40 object-cover rounded-2xl" />
+          <h3 class="text-base font-bold text-emerald-100">Hybrid Tomato Seeds (100g)</h3>
+          <span class="text-lg font-black text-emerald-300 block">$32.00</span>
+          <button onclick="triggerConfetti('Item added to cart!')" class="w-full py-2 rounded-xl bg-emerald-500 text-emerald-950 font-bold text-xs shadow hover:brightness-110">Add to Cart</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 8: CONSULTATION -->
+    <section id="tab-consultation" class="tab-page hidden animate-fadeInUp space-y-8 py-4 pb-20">
+      <div class="text-center space-y-2">
+        <h2 class="text-3xl font-extrabold text-emerald-100">Book Agronomist Consultation</h2>
+        <p class="text-xs text-emerald-300/70">Connect 1-on-1 with certified plant pathologists via Video/Voice call.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div class="glass-card p-6 rounded-3xl space-y-3 text-center">
+          <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=300&q=80" alt="Doctor" class="w-20 h-20 rounded-full object-cover mx-auto border-2 border-emerald-400/40 shadow-lg" />
+          <h3 class="text-base font-bold text-emerald-100">Dr. Rajesh Kumar, Ph.D.</h3>
+          <p class="text-xs text-emerald-300/80">Senior Plant Pathologist (18 yrs exp)</p>
+          <span class="text-sm font-black text-emerald-300 block">$25.00 / session</span>
+          <button onclick="triggerConfetti('Appointment slot reserved for Today at 4:00 PM!')" class="w-full py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-emerald-950 font-extrabold text-xs shadow hover:brightness-110">Book Video Call</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 9: ADMIN -->
+    <section id="tab-admin" class="tab-page hidden animate-fadeInUp space-y-8 py-4 pb-20">
+      <div class="glass-panel p-8 rounded-3xl border border-emerald-500/30 space-y-4 shadow-2xl">
+        <h2 class="text-3xl font-extrabold text-emerald-100">AgroGen Super Admin Console</h2>
+        <div class="grid grid-cols-4 gap-4 text-center">
+          <div class="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
+            <span class="text-2xl font-black text-emerald-300 block">85,420</span>
+            <span class="text-[10px] text-emerald-200/70">Farmers</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
+            <span class="text-2xl font-black text-teal-300 block">512</span>
+            <span class="text-[10px] text-emerald-200/70">Doctors</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
+            <span class="text-2xl font-black text-cyan-300 block">250,910</span>
+            <span class="text-[10px] text-emerald-200/70">AI Scans</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-emerald-900/30 border border-emerald-500/20">
+            <span class="text-2xl font-black text-emerald-200 block">99.98%</span>
+            <span class="text-[10px] text-emerald-200/70">Uptime</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ================= FLOATING AI CHATBOT ================= -->
+  <div class="fixed bottom-6 right-6 z-50">
+    <div id="chatbot-box" class="hidden w-80 sm:w-96 h-[500px] glass-panel rounded-3xl border border-emerald-500/40 p-4 flex flex-col justify-between shadow-2xl bg-emerald-950/95 backdrop-blur-xl animate-fadeInUp">
+      <div class="flex items-center justify-between pb-3 border-b border-emerald-800/40">
+        <div class="flex items-center gap-2">
+          <span class="text-lg">🤖</span>
+          <span class="text-xs font-bold text-emerald-100">AgroGen AI 24/7 Advisor</span>
+        </div>
+        <button onclick="toggleChatbot()" class="text-emerald-300 hover:text-rose-400 font-bold text-xs">✕</button>
+      </div>
+
+      <div id="chat-messages" class="flex-1 overflow-y-auto space-y-3 py-3 pr-1 text-xs">
+        <div class="p-3 rounded-2xl bg-emerald-900/60 border border-emerald-500/20 text-emerald-100 max-w-[85%]">
+          Hello! I am AgroGen 24/7 AI Smart Assistant. Ask me anything about diseases, fertilizers, or watering schedules!
+        </div>
+      </div>
+
+      <div class="pt-2 border-t border-emerald-800/40 flex items-center gap-2">
+        <input type="text" id="chat-input-text" placeholder="Ask AgroGen AI..." onkeydown="if(event.key==='Enter') sendChatMessage()" class="flex-1 bg-emerald-950 border border-emerald-500/30 rounded-xl px-3 py-2 text-xs text-emerald-100 focus:outline-none" />
+        <button onclick="sendChatMessage()" class="px-4 py-2 bg-emerald-500 text-emerald-950 font-bold text-xs rounded-xl shadow">Send</button>
+      </div>
+    </div>
+
+    <button id="chatbot-trigger-btn" onclick="toggleChatbot()" class="p-4 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-400 text-emerald-950 font-black shadow-2xl hover:scale-110 transition-transform">
+      🤖 AI 24/7
+    </button>
+  </div>
+
+  <!-- ================= LIVE CAMERA SNAPSHOT MODAL ================= -->
+  <div id="camera-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fadeInUp">
+    <div class="w-full max-w-lg glass-panel rounded-3xl border border-emerald-500/40 p-6 space-y-4 text-center relative shadow-2xl">
+      <h3 class="text-lg font-bold text-emerald-100">Live Camera Leaf Capture</h3>
+      <div class="relative rounded-2xl overflow-hidden border border-emerald-500/30 bg-black">
+        <video id="camera-video" autoplay playsinline class="w-full h-64 object-cover"></video>
+      </div>
+      <div class="flex gap-3">
+        <button onclick="stopCameraFeed()" class="flex-1 py-2.5 rounded-xl bg-emerald-900/60 text-emerald-300 text-xs font-bold transition-colors hover:bg-emerald-900">
+          Cancel
+        </button>
+        <button onclick="captureCameraSnapshot()" class="flex-1 py-2.5 rounded-xl bg-emerald-500 text-emerald-950 text-xs font-extrabold shadow-lg hover:brightness-110 transition-all">
+          Capture Snapshot
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= AUTH MODAL ================= -->
+  <div id="auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeInUp">
+    <div class="w-full max-w-md glass-panel rounded-3xl border border-emerald-500/30 p-6 space-y-6 relative shadow-2xl">
+      <button onclick="toggleAuthModal()" class="absolute top-5 right-5 text-emerald-300 hover:text-rose-400 font-bold">✕</button>
+      <h3 class="text-2xl font-bold text-emerald-100 text-center">Login to AgroGen</h3>
+      
+      <form onsubmit="event.preventDefault(); toggleAuthModal(); triggerConfetti('Welcome back to AgroGen!');" class="space-y-4 text-xs">
+        <div>
+          <label class="text-emerald-200 block mb-1">Email Address</label>
+          <input type="email" required placeholder="farmer@agrogen.ai" class="w-full px-3 py-2.5 rounded-xl bg-emerald-900/30 border border-emerald-500/30 text-emerald-100 focus:outline-none" />
+        </div>
+        <div>
+          <label class="text-emerald-200 block mb-1">Password</label>
+          <input type="password" required placeholder="••••••••" class="w-full px-3 py-2.5 rounded-xl bg-emerald-900/30 border border-emerald-500/30 text-emerald-100 focus:outline-none" />
+        </div>
+        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-emerald-950 font-black text-xs shadow-lg">Login to Platform</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    // Tab Switcher with Animations
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-page').forEach(el => el.classList.add('hidden'));
+      const target = document.getElementById('tab-' + tabId);
+      if (target) {
+        target.classList.remove('hidden');
+        target.classList.remove('animate-fadeInUp');
+        void target.offsetWidth; // Trigger reflow for animation restart
+        target.classList.add('animate-fadeInUp');
+      }
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.className = "nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-emerald-200/70 hover:text-emerald-200 hover:bg-emerald-900/40";
+      });
+      const activeNav = document.getElementById('nav-' + tabId);
+      if (activeNav) {
+        activeNav.className = "nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm";
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Mock Diseases Dataset for Standalone Page
+    const mockDiseases = {
+      'Tomato Late Blight': {
+        name: 'Tomato Late Blight (Phytophthora infestans)',
+        category: 'Fungal Pathogen',
+        confidence: '96.8%',
+        severity: 'High',
+        severityColor: 'text-amber-400',
+        area: '35% of foliage',
+        score: '62/100',
+        organic: [
+          'Apply Copper Octanoate / Liquid Copper Fungicide spray twice weekly.',
+          'Spray Neem Oil (0.5% concentration) combined with potassium bicarbonate.'
+        ],
+        chemical: [
+          'Apply Chlorothalonil or Mancozeb preventative sprays.',
+          'Use systemic fungicides such as Cymoxanil or Dimethomorph.'
+        ]
+      },
+      'Rice Blast Disease': {
+        name: 'Rice Blast Disease (Magnaporthe oryzae)',
+        category: 'Fungal Pathogen',
+        confidence: '94.2%',
+        severity: 'Critical',
+        severityColor: 'text-rose-400',
+        area: '48% of leaf blade',
+        score: '48/100',
+        organic: [
+          'Apply Pseudomonas fluorescens bio-agent at 10g/L spray.',
+          'Foliar spray of 5% raw cow milk extract in early morning.'
+        ],
+        chemical: [
+          'Foliar spray with Tricyclazole 75% WP at 0.6g/L.',
+          'Isoprothiolane 40% EC application.'
+        ]
+      },
+      'Wheat Yellow Rust': {
+        name: 'Wheat Stripe / Yellow Rust (Puccinia striiformis)',
+        category: 'Fungal Pathogen',
+        confidence: '97.5%',
+        severity: 'High',
+        severityColor: 'text-amber-400',
+        area: '40% of leaf blades',
+        score: '55/100',
+        organic: [
+          'Dust fine agricultural sulfur powder at 25kg/ha.',
+          'Garlic & chilli extract bio-spray.'
+        ],
+        chemical: [
+          'Spray Propiconazole 25% EC at 1ml per liter of water.',
+          'Tebuconazole 25.9% EC application.'
+        ]
+      }
+    };
+
+    // AI Disease Scanner Logic
+    function runAiDiseaseScan(diseaseName) {
+      if (!diseaseName) {
+        const keys = Object.keys(mockDiseases);
+        diseaseName = keys[Math.floor(Math.random() * keys.length)];
+      }
+
+      // If chip was clicked directly, ensure preview is loaded and visible
+      const demoImages = {
+        'Tomato Late Blight': 'https://images.unsplash.com/photo-1592417817098-8f3d6eb19657?w=600&q=80',
+        'Rice Blast Disease': 'https://images.unsplash.com/photo-1536657464919-892534f60d6e?w=600&q=80',
+        'Wheat Yellow Rust': 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&q=80'
+      };
+
+      const previewImg = document.getElementById('scan-img-preview');
+      if (demoImages[diseaseName] && previewImg.src !== demoImages[diseaseName] && !previewImg.src.startsWith('data:')) {
+        previewImg.src = demoImages[diseaseName];
+        document.getElementById('scanner-placeholder-view').classList.add('hidden');
+        document.getElementById('scanner-preview-view').classList.remove('hidden');
+      }
+
+      const laser = document.getElementById('laser-fx');
+      laser.classList.remove('hidden');
+      document.getElementById('diagnostic-result-card').classList.add('hidden');
+
+      setTimeout(() => {
+        laser.classList.add('hidden');
+        
+        const data = mockDiseases[diseaseName] || mockDiseases['Tomato Late Blight'];
+        
+        // Update diagnostic UI elements dynamically
+        document.querySelector('#diagnostic-result-card span.uppercase').innerText = data.category;
+        document.getElementById('diag-name').innerText = data.name;
+        
+        const stats = document.querySelectorAll('#diagnostic-result-card .grid.grid-cols-2 span.font-black');
+        if (stats.length >= 4) {
+          stats[0].innerText = data.confidence;
+          stats[1].innerText = data.severity;
+          stats[1].className = `text-xl font-black ${data.severityColor}`;
+          stats[2].innerText = data.area;
+          stats[3].innerText = data.score;
+        }
+
+        const remedies = document.querySelectorAll('#diagnostic-result-card .grid-cols-1 .bg-emerald-950\\/60');
+        if (remedies.length >= 2) {
+          remedies[0].innerHTML = `<h4 class="text-xs font-bold text-emerald-300">🌱 Organic Remedies</h4>` + 
+            data.organic.map(item => `<p class="text-xs text-emerald-100/80">${item}</p>`).join('');
+
+          remedies[1].innerHTML = `<h4 class="text-xs font-bold text-amber-300">🧪 Chemical Remedies</h4>` + 
+            data.chemical.map(item => `<p class="text-xs text-emerald-100/80">${item}</p>`).join('');
+        }
+
+        document.getElementById('diagnostic-result-card').classList.remove('hidden');
+        triggerConfetti();
+        window.scrollTo({ top: 600, behavior: 'smooth' });
+      }, 2000);
+    }
+
+    // File input handlers
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('scan-img-preview').src = e.target.result;
+          document.getElementById('scanner-placeholder-view').classList.add('hidden');
+          document.getElementById('scanner-preview-view').classList.remove('hidden');
+          document.getElementById('diagnostic-result-card').classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function resetScannerImage() {
+      document.getElementById('scan-img-preview').src = '';
+      document.getElementById('scanner-preview-view').classList.add('hidden');
+      document.getElementById('scanner-placeholder-view').classList.remove('hidden');
+      document.getElementById('diagnostic-result-card').classList.add('hidden');
+    }
+
+    // Camera capture handlers
+    let cameraStream = null;
+
+    async function triggerCameraFeed() {
+      const modal = document.getElementById('camera-modal');
+      const video = document.getElementById('camera-video');
+      modal.classList.remove('hidden');
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment' }
+        });
+        video.srcObject = cameraStream;
+      } catch (err) {
+        alert('Camera access denied or not supported on this device. Please check your browser permissions.');
+        modal.classList.add('hidden');
+      }
+    }
+
+    function stopCameraFeed() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+      const video = document.getElementById('camera-video');
+      if (video) {
+        video.srcObject = null;
+      }
+      document.getElementById('camera-modal').classList.add('hidden');
+    }
+
+    function captureCameraSnapshot() {
+      const video = document.getElementById('camera-video');
+      if (video && cameraStream) {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 480;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg');
+
+        document.getElementById('scan-img-preview').src = dataUrl;
+        document.getElementById('scanner-placeholder-view').classList.add('hidden');
+        document.getElementById('scanner-preview-view').classList.remove('hidden');
+        document.getElementById('diagnostic-result-card').classList.add('hidden');
+
+        stopCameraFeed();
+      }
+    }
+
+    // PDF Report Generator
+    function downloadPdfReport() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      const diseaseName = document.getElementById('diag-name').innerText;
+      const confidence = document.querySelectorAll('#diagnostic-result-card .grid.grid-cols-2 span.font-black')[0].innerText;
+      const severity = document.querySelectorAll('#diagnostic-result-card .grid.grid-cols-2 span.font-black')[1].innerText;
+      
+      doc.setFillColor(11, 28, 17);
+      doc.rect(0, 0, 210, 38, 'F');
+      
+      doc.setTextColor(34, 197, 94);
+      doc.setFontSize(20);
+      doc.text('AgroGen Smart Diagnostic Report', 14, 20);
+      
+      doc.setTextColor(50, 50, 50);
+      doc.setFontSize(12);
+      doc.text(`Disease: ${diseaseName}`, 14, 50);
+      doc.text(`Confidence: ${confidence} | Severity: ${severity}`, 14, 60);
+      
+      doc.save(`AgroGen_Report_${diseaseName.replace(/\s+/g, '_')}.pdf`);
+    }
+
+    // Chatbot Modal Toggle
+    function toggleChatbot() {
+      const box = document.getElementById('chatbot-box');
+      box.classList.toggle('hidden');
+    }
+
+    // Chatbot Message Handling with Speech Synthesis
+    function sendChatMessage() {
+      const input = document.getElementById('chat-input-text');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const container = document.getElementById('chat-messages');
+      container.innerHTML += `<div class="p-3 rounded-2xl bg-emerald-500 text-emerald-950 font-bold ml-auto max-w-[85%]">${text}</div>`;
+      input.value = '';
+
+      setTimeout(() => {
+        let reply = "AgroGen AI recommends maintaining optimal soil pH (6.0-6.8) and providing balanced NPK organic nutrients.";
+        if (text.toLowerCase().includes('yellow')) reply = "Yellowing leaves indicate Nitrogen deficiency. Apply a foliar spray of Liquid Bio-Nitrogen or Vermicompost tea.";
+        if (text.toLowerCase().includes('fertilizer')) reply = "Use balanced NPK 19:19:19 for vegetative growth and High-Potash for fruit bloom.";
+        
+        container.innerHTML += `<div class="p-3 rounded-2xl bg-emerald-900/60 border border-emerald-500/20 text-emerald-100 max-w-[85%]">${reply}</div>`;
+        container.scrollTop = container.scrollHeight;
+
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const utt = new SpeechSynthesisUtterance(reply);
+          window.speechSynthesis.speak(utt);
+        }
+      }, 500);
+    }
+
+    // Auth Modal Toggle
+    function toggleAuthModal() {
+      const modal = document.getElementById('auth-modal');
+      modal.classList.toggle('hidden');
+    }
+
+    // Confetti Animation Trigger
+    function triggerConfetti(msg) {
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
+      }
+      if (msg) alert(msg);
+    }
+  </script>
+
+</body>
+</html>
